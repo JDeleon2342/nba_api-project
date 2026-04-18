@@ -1,0 +1,24 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "NBA Shot Selection Analysis Over 15 Years"
+  navbar:
+    left:
+      - href: 
+        text: Home
+      - href: 
+        text: Getting Started
+      - href: 
+        text: Documentation
+      - href: 
+        text: Technical Report
+
+format:
+  html:
+    theme:
+      - cosmo
+      - brand
+    css: styles.css
+    toc: true
