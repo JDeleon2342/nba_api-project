@@ -10,7 +10,3 @@ dependencies = [
     "numpy>=2.4.3",
     "pandas>=3.0.1",
 ]
-
-[build-system]
-requires = ["uv_build>=0.8.9,<0.9.0"]
-build-backend = "uv_build"
