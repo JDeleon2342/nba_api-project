@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from matplotlib.patches import Arc, Circle, Rectangle
 import seaborn as sns
-from analysis import (
+from src.analysis import (
     zone_distribution,
     three_point_rate_by_season,
     three_point_rate_by_team_season,
