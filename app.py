@@ -1,155 +1,393 @@
 import streamlit as st
 import pandas as pd
-import altair as alt
+import matplotlib.pyplot as plt
 
-st.set_page_config(page_title="NBA Shot Story", layout="wide")
+from src.data_collection import load_shot_data, load_dataset
+from src.analysis import (
+    zone_distribution,
+    three_point_rate_by_season,
+    three_point_rate_by_team_season,
+    compare_eras,
+    biggest_zone_shifts,
+    rank_teams_by_three_point_adoption,
+    correlate_three_pt_rate_with_wins,
+    build_summary_table,
+    team_shot_profile
+)
+from src.visualization import (
+    plot_court_heatmap,
+    plot_era_heatmap_comparison,
+    plot_three_point_trend,
+    plot_zone_distribution_over_time,
+    plot_zone_shift_bar,
+    plot_team_three_point_trajectory,
+    plot_three_pt_vs_wins,
+    plot_top_three_point_adopters
+)
 
-# -----------------------------
-# Load Data
-# -----------------------------
-@st.cache_data
+# ── Page Config ──────────────────────────────────────────────────────────────
+
+st.set_page_config(
+    page_title="NBA Shot Selection Analysis",
+    page_icon="🏀",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+# ── Custom CSS ───────────────────────────────────────────────────────────────
+
+st.markdown("""
+    <style>
+    .main { background-color: #0e1117; }
+    .block-container { padding-top: 2rem; }
+    h1 { color: #e63946; }
+    h2 { color: #a8dadc; }
+    h3 { color: #ffffff; }
+    .stMetric label { color: #a8dadc; font-size: 14px; }
+    </style>
+""", unsafe_allow_html=True)
+
+
+# ── Data Loading ─────────────────────────────────────────────────────────────
+
+@st.cache_resource
 def load_data():
-    return pd.read_csv("shot_data_clean.csv")
+    """
+    Assemble shot data from 4 part files and load team metrics.
+    Cached so reassembly only happens once per session.
+    """
+    with st.spinner("Assembling shot data from part files..."):
+        shots = load_shot_data()
 
-df = load_data()
+    with st.spinner("Loading team metrics..."):
+        metrics = load_dataset("data/team_metrics_clean.csv")
 
-players = sorted(df['player_name'].unique())
+    return shots, metrics
 
-# -----------------------------
-# Story Tabs
-# -----------------------------
-tab1, tab2, tab3, tab4 = st.tabs([
-    "1. Introduction",
-    "2. Shot Selection Patterns",
-    "3. Shot Efficiency & Heatmaps",
-    "4. Player Comparison"
-])
 
-# -----------------------------
-# TAB 1 — INTRODUCTION
-# -----------------------------
-with tab1:
-    st.title("NBA Shot Selection Story")
-    st.header("1. Introduction & Motivation")
+shots, metrics = load_data()
 
-    st.write("""
-    This dashboard explores NBA shot selection using play-by-play shot data.
-    The goal is to understand **where players shoot**, **what types of shots they take**, 
-    and **how efficient they are** from different locations.
 
-    This story walks through:
-    - How shot selection varies by player  
-    - Where players take the most shots  
-    - Which areas of the court are most efficient  
-    - How two players compare in style and accuracy  
-    """)
+# ── Sidebar ──────────────────────────────────────────────────────────────────
 
-    st.write("Use the tabs above to navigate through the story.")
+st.sidebar.image(
+    "https://upload.wikimedia.org/wikipedia/commons/7/7a/Basketball.png",
+    width=80
+)
+st.sidebar.title("🏀 NBA Shot Analysis")
+st.sidebar.markdown("---")
 
-# -----------------------------
-# TAB 2 — SHOT SELECTION PATTERNS
-# -----------------------------
-with tab2:
-    st.header("2. Shot Selection Patterns")
+page = st.sidebar.radio(
+    "Navigate",
+    [
+        "🏠 Overview",
+        "📈 League Trends",
+        "🗺️ Court Heatmaps",
+        "🏆 Team Analysis",
+        "📊 Shot Zones",
+        "🔗 Efficiency & Wins"
+    ]
+)
 
-    selected_player = st.selectbox("Choose a player", players)
+st.sidebar.markdown("---")
+st.sidebar.markdown("**Dataset Info**")
+st.sidebar.markdown(f"Seasons: `{shots['season'].min()}` — `{shots['season'].max()}`")
+st.sidebar.markdown(f"Total Shots: `{len(shots):,}`")
+st.sidebar.markdown(f"Teams: `{shots['team'].nunique()}`")
+st.sidebar.markdown(f"Zones: `{shots['zone_basic'].nunique()}`")
 
-    filtered = df[df['player_name'] == selected_player]
 
-    st.subheader(f"Shot Chart for {selected_player}")
+# ── Page: Overview ───────────────────────────────────────────────────────────
 
-    chart = (
-        alt.Chart(filtered)
-        .mark_circle(size=40, opacity=0.6)
-        .encode(
-            x=alt.X("loc_x:Q", scale=alt.Scale(domain=[-250, 250])),
-            y=alt.Y("loc_y:Q", scale=alt.Scale(domain=[-50, 900])),
-            color="shot_made_flag:N",
-            tooltip=["shot_distance", "shot_type", "shot_made_flag"]
-        )
-        .properties(height=600)
+if page == "🏠 Overview":
+    st.title("🏀 NBA Shot Selection Evolution")
+    st.markdown(
+        "### How has NBA shot selection evolved over the past decade, "
+        "and which teams gained the greatest competitive advantage?"
     )
+    st.markdown("---")
 
-    st.altair_chart(chart, use_container_width=True)
+    # Key metrics row
+    seasons    = sorted(shots["season"].unique())
+    first_s    = seasons[0]
+    last_s     = seasons[-1]
+    first_3pt  = shots[shots["season"] == first_s]["is_three"].mean() * 100
+    last_3pt   = shots[shots["season"] == last_s]["is_three"].mean() * 100
+    delta_3pt  = last_3pt - first_3pt
 
-    st.write("""
-    **Interpretation:**  
-    This chart shows where the player tends to shoot from. 
-    Clusters indicate preferred shooting zones, while color shows makes vs misses.
-    """)
+    col1, col2, col3, col4 = st.columns(4)
+    col1.metric("Total Shot Attempts",      f"{len(shots):,}")
+    col2.metric("Seasons Covered",          f"{len(seasons)}")
+    col3.metric(f"3PT Rate {first_s}",      f"{first_3pt:.1f}%")
+    col4.metric(f"3PT Rate {last_s}",       f"{last_3pt:.1f}%",
+                delta=f"+{delta_3pt:.1f}%")
 
-# -----------------------------
-# TAB 3 — SHOT EFFICIENCY & HEATMAPS
-# -----------------------------
-with tab3:
-    st.header("3. Shot Efficiency & Heatmaps")
+    st.markdown("---")
 
-    selected_player2 = st.selectbox("Choose a player for efficiency analysis", players)
+    col_left, col_right = st.columns(2)
 
-    filtered2 = df[df['player_name'] == selected_player2]
+    with col_left:
+        st.subheader("Three Point Rate Over Time")
+        fig = plot_three_point_trend(shots)
+        st.pyplot(fig)
+        plt.close()
 
-    st.subheader(f"Shot Efficiency for {selected_player2}")
+    with col_right:
+        st.subheader("Biggest Zone Shifts")
+        fig = plot_zone_shift_bar(shots)
+        st.pyplot(fig)
+        plt.close()
 
-    heatmap = (
-        alt.Chart(filtered2)
-        .transform_bin(["xbin", "ybin"], ["loc_x", "loc_y"])
-        .transform_aggregate(
-            made="mean(shot_made_flag)",
-            count="count()",
-            groupby=["xbin", "ybin"]
-        )
-        .mark_rect()
-        .encode(
-            x="xbin:Q",
-            y="ybin:Q",
-            color=alt.Color("made:Q", scale=alt.Scale(scheme="redyellowgreen")),
-            tooltip=["made", "count"]
-        )
-        .properties(height=600)
-    )
+    st.markdown("---")
+    st.subheader("Shot Location by Era")
+    fig = plot_era_heatmap_comparison(shots)
+    st.pyplot(fig)
+    plt.close()
 
-    st.altair_chart(heatmap, use_container_width=True)
 
-    st.write("""
-    **Interpretation:**  
-    Green areas show high-efficiency zones.  
-    Red areas show low-efficiency zones.  
-    This helps identify strengths and weaknesses in shot selection.
-    """)
+# ── Page: League Trends ──────────────────────────────────────────────────────
 
-# -----------------------------
-# TAB 4 — PLAYER COMPARISON
-# -----------------------------
-with tab4:
-    st.header("4. Player Comparison")
+elif page == "📈 League Trends":
+    st.title("📈 League Wide Trends")
+    st.markdown("---")
+
+    st.subheader("Three Point Attempt Rate Over Time")
+    fig = plot_three_point_trend(shots)
+    st.pyplot(fig)
+    plt.close()
+
+    st.markdown("---")
+    st.subheader("Shot Zone Distribution Over Time")
+    fig = plot_zone_distribution_over_time(shots)
+    st.pyplot(fig)
+    plt.close()
+
+    st.markdown("---")
+    st.subheader("Zone Shift: First vs Most Recent Season")
 
     col1, col2 = st.columns(2)
 
     with col1:
-        p1 = st.selectbox("Player 1", players, key="p1")
+        fig = plot_zone_shift_bar(shots)
+        st.pyplot(fig)
+        plt.close()
 
     with col2:
-        p2 = st.selectbox("Player 2", players, key="p2")
-
-    df1 = df[df['player_name'] == p1]
-    df2 = df[df['player_name'] == p2]
-
-    st.subheader("Shot Volume Comparison")
-
-    vol_chart = (
-        alt.Chart(pd.concat([df1.assign(player=p1), df2.assign(player=p2)]))
-        .mark_bar()
-        .encode(
-            x="player:N",
-            y="count():Q",
-            color="player:N"
+        shifts = biggest_zone_shifts(shots)
+        st.dataframe(
+            shifts.rename(columns={
+                "zone_basic": "Zone",
+                "pct_first":  f"% in {shots['season'].min()}",
+                "pct_last":   f"% in {shots['season'].max()}",
+                "change":     "Change (%)"
+            }).round(2),
+            use_container_width=True,
+            hide_index=True
         )
+
+
+# ── Page: Court Heatmaps ─────────────────────────────────────────────────────
+
+elif page == "🗺️ Court Heatmaps":
+    st.title("🗺️ Court Heatmaps")
+    st.markdown("Explore where shots are taken by team and season.")
+    st.markdown("---")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        selected_team = st.selectbox(
+            "Select Team",
+            sorted(shots["team"].unique())
+        )
+    with col2:
+        selected_season = st.selectbox(
+            "Select Season",
+            sorted(shots["season"].unique(), reverse=True)
+        )
+
+    fig = plot_court_heatmap(
+        shots,
+        team=selected_team,
+        season=selected_season
+    )
+    st.pyplot(fig)
+    plt.close()
+
+    st.markdown("---")
+    st.subheader("Era Comparison — Shot Locations")
+    fig = plot_era_heatmap_comparison(shots)
+    st.pyplot(fig)
+    plt.close()
+
+
+# ── Page: Team Analysis ──────────────────────────────────────────────────────
+
+elif page == "🏆 Team Analysis":
+    st.title("🏆 Team Analysis")
+    st.markdown("---")
+
+    st.subheader("Three Point Rate Trajectory")
+    st.markdown("Compare three point adoption across teams over time.")
+
+    selected_teams = st.multiselect(
+        "Select Teams",
+        sorted(shots["team"].unique()),
+        default=["Houston Rockets", "San Antonio Spurs", "Golden State Warriors"]
     )
 
-    st.altair_chart(vol_chart, use_container_width=True)
+    if selected_teams:
+        fig = plot_team_three_point_trajectory(shots, teams=selected_teams)
+        st.pyplot(fig)
+        plt.close()
+    else:
+        st.warning("Please select at least one team.")
 
-    st.write("""
-    **Interpretation:**  
-    This comparison highlights differences in shot volume and style between two players.
-    """)
+    st.markdown("---")
+    st.subheader("Top Three Point Adopters")
 
+    top_n = st.slider(
+        "Number of teams to show",
+        min_value=5, max_value=30, value=10
+    )
+    fig = plot_top_three_point_adopters(shots, top_n=top_n)
+    st.pyplot(fig)
+    plt.close()
+
+    st.markdown("---")
+    st.subheader("Team Shot Zone Profile")
+
+    profile_team = st.selectbox(
+        "Select Team",
+        sorted(shots["team"].unique()),
+        key="profile_team"
+    )
+
+    profile_df = team_shot_profile(shots, profile_team)
+    pivot = profile_df.pivot(
+        index="season",
+        columns="zone_basic",
+        values="pct"
+    ).fillna(0).round(2)
+
+    st.dataframe(pivot, use_container_width=True)
+
+
+# ── Page: Shot Zones ─────────────────────────────────────────────────────────
+
+elif page == "📊 Shot Zones":
+    st.title("📊 Shot Zone Breakdown")
+    st.markdown("---")
+
+    view = st.radio(
+        "View by",
+        ["League Wide", "By Team", "By Era"],
+        horizontal=True
+    )
+
+    if view == "League Wide":
+        season_filter = st.selectbox(
+            "Select Season",
+            ["All Seasons"] + sorted(shots["season"].unique(), reverse=True)
+        )
+
+        if season_filter == "All Seasons":
+            dist = (
+                shots.groupby("zone_basic")
+                .size()
+                .reset_index(name="count")
+            )
+            dist["pct"] = dist["count"] / dist["count"].sum() * 100
+        else:
+            filtered = shots[shots["season"] == season_filter]
+            dist = (
+                filtered.groupby("zone_basic")
+                .size()
+                .reset_index(name="count")
+            )
+            dist["pct"] = dist["count"] / dist["count"].sum() * 100
+
+        fig, ax = plt.subplots(figsize=(8, 6))
+        ax.barh(dist["zone_basic"], dist["pct"], color="#e63946")
+        ax.set_xlabel("Percentage of Shots (%)")
+        ax.set_title(f"Shot Zone Distribution — {season_filter}")
+        ax.grid(axis="x", alpha=0.3)
+        plt.tight_layout()
+        st.pyplot(fig)
+        plt.close()
+
+    elif view == "By Team":
+        team = st.selectbox(
+            "Select Team",
+            sorted(shots["team"].unique())
+        )
+        fig = plot_zone_distribution_over_time(shots[shots["team"] == team])
+        st.pyplot(fig)
+        plt.close()
+
+    elif view == "By Era":
+        era_dist = compare_eras(shots)
+        pivot = era_dist.pivot(
+            index="era",
+            columns="zone_basic",
+            values="pct"
+        ).fillna(0).round(2)
+
+        st.dataframe(pivot, use_container_width=True)
+
+        fig, ax = plt.subplots(figsize=(12, 6))
+        pivot.T.plot(kind="bar", ax=ax, colormap="viridis")
+        ax.set_title("Shot Zone Distribution by Era")
+        ax.set_xlabel("Zone")
+        ax.set_ylabel("Percentage (%)")
+        ax.tick_params(axis="x", rotation=45)
+        ax.legend(title="Era", fontsize=9)
+        plt.tight_layout()
+        st.pyplot(fig)
+        plt.close()
+
+
+# ── Page: Efficiency & Wins ──────────────────────────────────────────────────
+
+elif page == "🔗 Efficiency & Wins":
+    st.title("🔗 Shot Selection & Winning")
+    st.markdown("Does shooting more threes correlate with more wins?")
+    st.markdown("---")
+
+    try:
+        corr_df     = correlate_three_pt_rate_with_wins(shots, metrics)
+        correlation = corr_df[["three_pt_rate", "win_pct"]].corr().iloc[0, 1]
+
+        col1, col2, col3 = st.columns(3)
+        col1.metric("Correlation (3PT Rate vs Win%)", f"{correlation:.3f}")
+        col2.metric("Team Seasons Analyzed",          f"{len(corr_df):,}")
+        col3.metric(
+            "Direction",
+            "Positive ↑" if correlation > 0 else "Negative ↓"
+        )
+
+        st.markdown("---")
+        fig = plot_three_pt_vs_wins(corr_df)
+        st.pyplot(fig)
+        plt.close()
+
+        st.markdown("---")
+        st.subheader("Full Summary Table")
+        summary = build_summary_table(shots)
+        st.dataframe(summary.round(3), use_container_width=True)
+
+    except Exception as e:
+        st.error(f"Could not load efficiency data: {e}")
+        st.info(
+            "Make sure team_metrics_clean.csv is present in the data/ folder."
+        )
+
+
+# ── Footer ───────────────────────────────────────────────────────────────────
+
+st.sidebar.markdown("---")
+st.sidebar.markdown(
+    "**STAT 386 Final Project**  \n"
+    "Jose De Leon & Nick Austin  \n"
+    "Data: NBA Stats API"
+)

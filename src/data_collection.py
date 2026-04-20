@@ -203,3 +203,22 @@ def load_dataset(path):
         Loaded DataFrame
     """
     return pd.read_csv(path)
+
+
+def load_shot_data():
+    """
+    Load and reassemble the split shot data CSV files into one full DataFrame.
+
+    Returns:
+        Combined DataFrame with all shot data
+    """
+    parts = []
+    for i in range(1, 5):
+        path = f"data/shot_data_clean_part{i}.csv"
+        df_part = pd.read_csv(path)
+        parts.append(df_part)
+        print(f"Loaded part {i}: {len(df_part):,} rows")
+
+    df = pd.concat(parts, ignore_index=True)
+    print(f"\nAssembly complete: {len(df):,} total rows")
+    return df
