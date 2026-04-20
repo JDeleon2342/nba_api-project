@@ -116,13 +116,14 @@ def get_all_teams_shot_data(season, delay = 0.6):
             time.sleep(delay)
 
         except Exception as e:
-            print(f"  Failed for {team_name}: {e}")
-            time.sleep(delay * 2)
+            print(f"\n❌ Failed for {team_name} — {season}")
+            print("Error:", e)
+            print("Team ID:", team_id)
 
     return pd.concat(frames, ignore_index=True)
 
 
-def get_multiple_seasons_shot_data(seasons, delay = 0.6):
+def get_multiple_seasons_shot_data(seasons, delay = 15):
     """
     Collect shot data for all teams across multiple seasons.
 
@@ -164,7 +165,7 @@ def get_team_season_metrics(season_range):
             df = leaguedashteamstats.LeagueDashTeamStats(
                 season=season,
                 season_type_all_star="Regular Season",
-                per_mode_simple="PerGame"
+                per_mode_detailed="PerGame"
             ).get_data_frames()[0]
 
             df["season"] = season

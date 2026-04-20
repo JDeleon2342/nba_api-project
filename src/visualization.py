@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from matplotlib.patches import Arc, Circle, Rectangle
 import seaborn as sns
-from analysis import (
+from src.analysis import (
     zone_distribution,
     three_point_rate_by_season,
     three_point_rate_by_team_season,
@@ -161,7 +161,7 @@ def plot_era_heatmap_comparison(df: pd.DataFrame) -> plt.Figure:
     """
     eras = ["Early (2013-17)", "Mid (2017-21)", "Recent (2021-24)"]
     fig, axes = plt.subplots(1, 3, figsize=(24, 9))
-    fig.patch.set_facecolor("#1a1a2e")
+    fig.patch.set_facecolor("#ddddf9")
 
     for ax, era in zip(axes, eras):
         era_df = df[df["era"] == era]
