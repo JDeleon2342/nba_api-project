@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -72,10 +72,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-e31584831b205ffbb2d98406f31c2a5b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -228,7 +228,7 @@ Exploratory Analysis (src.analysis)
     ↓
 Visualization &amp; Insights (src.visualization)
     ↓
-Interactive Dashboard (streamlit app.py)</code></pre>
+Interactive Dashboard (streamlit app)</code></pre>
 </section>
 <section id="quick-start" class="level2">
 <h2 class="anchored" data-anchor-id="quick-start">Quick Start</h2>
@@ -238,7 +238,7 @@ Interactive Dashboard (streamlit app.py)</code></pre>
 <li><p><strong>Run the analysis:</strong></p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> main.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
 <li><p><strong>Explore interactively:</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">streamlit</span> run app.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run streamlit run app.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div></li>
 <li><p><strong>View the Jupyter notebook:</strong> Open <code>nba_api_eda.ipynb</code> for exploratory data analysis</p></li>
 </ol>
 </section>
@@ -253,7 +253,12 @@ Interactive Dashboard (streamlit app.py)</code></pre>
 </section>
 <section id="key-findings" class="level2">
 <h2 class="anchored" data-anchor-id="key-findings">Key Findings</h2>
-<p><em>Summary of insights coming soon. Run the analysis to generate findings.</em></p>
+<ul>
+<li>League-wide three-point attempt rate increased significantly from approximately 17% in 2010-11 to over 39% in 2023-24 — nearly doubling over the study period</li>
+<li>Teams that most aggressively adopted three-point shooting include the Memphis Grizzlies, Houston Rockets, and Golden State Warriors</li>
+<li>A positive correlation exists between three-point attempt rate and win percentage, suggesting teams that embraced modern shot selection gained a measurable competitive advantage</li>
+<li>Mid-range shots declined sharply as the dominant offensive strategy shifted toward shots at the rim and above-the-break threes</li>
+</ul>
 </section>
 <section id="files-documentation" class="level2">
 <h2 class="anchored" data-anchor-id="files-documentation">Files &amp; Documentation</h2>

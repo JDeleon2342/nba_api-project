@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -72,10 +72,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-e31584831b205ffbb2d98406f31c2a5b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -159,16 +159,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#purpose" id="toc-purpose" class="nav-link active" data-scroll-target="#purpose">Purpose</a></li>
   <li><a href="#data-extraction" id="toc-data-extraction" class="nav-link" data-scroll-target="#data-extraction">1. Data Extraction</a></li>
-  <li><a href="#data-structure" id="toc-data-structure" class="nav-link" data-scroll-target="#data-structure">2. Data Structure</a>
+  <li><a href="#key-findings" id="toc-key-findings" class="nav-link" data-scroll-target="#key-findings">2. Key Findings</a></li>
+  <li><a href="#data-structure" id="toc-data-structure" class="nav-link" data-scroll-target="#data-structure">3. Data Structure</a>
   <ul class="collapse">
   <li><a href="#shot-level-data" id="toc-shot-level-data" class="nav-link" data-scroll-target="#shot-level-data">Shot-Level Data</a></li>
   <li><a href="#team-metrics-data" id="toc-team-metrics-data" class="nav-link" data-scroll-target="#team-metrics-data">Team Metrics Data</a></li>
   </ul></li>
-  <li><a href="#cleaning-and-standardization" id="toc-cleaning-and-standardization" class="nav-link" data-scroll-target="#cleaning-and-standardization">3. Cleaning and Standardization</a></li>
-  <li><a href="#persisting-the-output" id="toc-persisting-the-output" class="nav-link" data-scroll-target="#persisting-the-output">4. Persisting the Output</a></li>
-  <li><a href="#exploration-workflow" id="toc-exploration-workflow" class="nav-link" data-scroll-target="#exploration-workflow">5. Exploration Workflow</a></li>
-  <li><a href="#reproducibility-notes" id="toc-reproducibility-notes" class="nav-link" data-scroll-target="#reproducibility-notes">6. Reproducibility Notes</a></li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">7. Summary</a></li>
+  <li><a href="#cleaning-and-standardization" id="toc-cleaning-and-standardization" class="nav-link" data-scroll-target="#cleaning-and-standardization">4. Cleaning and Standardization</a></li>
+  <li><a href="#data-storage" id="toc-data-storage" class="nav-link" data-scroll-target="#data-storage">5. Data Storage</a></li>
+  <li><a href="#exploration-workflow" id="toc-exploration-workflow" class="nav-link" data-scroll-target="#exploration-workflow">6. Exploration Workflow</a></li>
+  <li><a href="#reproducibility-notes" id="toc-reproducibility-notes" class="nav-link" data-scroll-target="#reproducibility-notes">7. Reproducibility Notes</a></li>
+  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">8. Summary</a></li>
   </ul>
 </nav>
     </div>
@@ -196,74 +197,137 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="purpose" class="level2">
 <h2 class="anchored" data-anchor-id="purpose">Purpose</h2>
-<p>This technical report documents the methodology and architecture of the NBA Shot Selection Analysis project. It provides an overview of how we collect, clean, and analyze 15 years of NBA shot data to understand trends in three-point shooting adoption.</p>
+<p>This technical report documents the methodology and architecture of the NBA Shot Selection Analysis project. It provides an overview of how we collect, clean, and analyze 14 years of NBA shot data to understand trends in three-point shooting adoption and their relationship to team success.</p>
 </section>
 <section id="data-extraction" class="level2">
 <h2 class="anchored" data-anchor-id="data-extraction">1. Data Extraction</h2>
-<p>We use the <a href="https://github.com/swar/nba_api">NBA Stats API</a> to collect official NBA statistics. The API provides shot-level data from the official NBA.com database.</p>
-<p><strong>Key endpoints used:</strong> - <code>shotchartdetail.ShotChartDetail()</code> – Individual shot attempts with coordinates and outcome - <code>leaguedashteamstats.LeagueDashTeamStats()</code> – Team-level offensive metrics</p>
-<p><strong>Data collection parameters:</strong> - Time period: 2010–2011 through 2023–2024 (14 seasons) - Teams: All 30 NBA teams - Season type: Regular season only - Context measure: Field goal attempts (FGA)</p>
+<p>We use the <a href="https://github.com/swar/nba_api">NBA Stats API</a> to collect official NBA statistics. The API provides shot-level data directly from the official NBA.com database.</p>
+<p><strong>Key endpoints used:</strong></p>
+<ul>
+<li><code>shotchartdetail.ShotChartDetail()</code> – Individual shot attempts with coordinates and outcome</li>
+<li><code>leaguedashteamstats.LeagueDashTeamStats()</code> – Team-level offensive metrics</li>
+</ul>
+<p><strong>Data collection parameters:</strong></p>
+<ul>
+<li>Time period: 2010–2011 through 2023–2024 (14 seasons)</li>
+<li>Teams: All 30 NBA teams</li>
+<li>Season type: Regular season only</li>
+<li>Context measure: Field goal attempts (FGA)</li>
+</ul>
+</section>
+<section id="key-findings" class="level2">
+<h2 class="anchored" data-anchor-id="key-findings">2. Key Findings</h2>
+<p>Our analysis of 2.8 million shot attempts across 14 seasons reveals three major findings:</p>
+<p><strong>Finding 1 — The Three-Point Revolution is Quantifiable</strong> League-wide three-point attempt rate nearly doubled over the study period, rising from approximately 20% in 2010–11 to over 39% in 2023–24. This represents the most dramatic strategic shift in NBA history, driven by analytics departments quantifying the efficiency advantage of three-point attempts over mid-range shots.</p>
+<p><strong>Finding 2 — Mid-Range Shooting Has Nearly Disappeared</strong> Mid-range shots declined sharply as the dominant offensive strategy shifted toward shots at the rim and above-the-break threes. The Houston Rockets most aggressively eliminated mid-range attempts, influencing league-wide trends that followed throughout the study period.</p>
+<p><strong>Finding 3 — Three-Point Adoption Correlates With Winning</strong> Teams with higher three-point attempt rates show a positive correlation with win percentage, particularly in the recent era (2021–24). This suggests that teams embracing modern shot selection gained a measurable competitive advantage over those that did not adapt.</p>
+<p><strong>Teams That Adapted Most</strong> The teams showing the largest increase in three-point attempt rate include the Houston Rockets, Milwaukee Bucks, and Golden State Warriors — all of whom experienced significant on-court success during the study period.</p>
 </section>
 <section id="data-structure" class="level2">
-<h2 class="anchored" data-anchor-id="data-structure">2. Data Structure</h2>
+<h2 class="anchored" data-anchor-id="data-structure">3. Data Structure</h2>
 <section id="shot-level-data" class="level3">
 <h3 class="anchored" data-anchor-id="shot-level-data">Shot-Level Data</h3>
-<p>Each shot record includes: - <code>TEAM_NAME</code> – NBA team name - <code>SEASON_1</code> – Season year - <code>SHOT_ZONE_BASIC</code> – Basic zone classification (e.g., “3PT Line”, “Paint”) - <code>SHOT_ZONE_AREA</code> – Detailed zone area - <code>SHOT_DISTANCE</code> – Distance in feet - <code>LOC_X</code>, <code>LOC_Y</code> – Court coordinates - <code>SHOT_ATTEMPTED_FLAG</code> – Whether the shot was attempted - <code>SHOT_MADE_FLAG</code> – Whether the shot was made (1) or missed (0) - <code>SHOT_TYPE</code> – “2PT Field Goal” or “3PT Field Goal” - <code>ACTION_TYPE</code> – Type of action (e.g., layup, jump shot)</p>
+<p>Each shot record includes:</p>
+<ul>
+<li><code>TEAM_NAME</code> – NBA team name</li>
+<li><code>SHOT_ZONE_BASIC</code> – Basic zone classification (e.g., “Above the Break 3”, “Mid-Range”)</li>
+<li><code>SHOT_ZONE_AREA</code> – Detailed zone area</li>
+<li><code>SHOT_DISTANCE</code> – Distance in feet</li>
+<li><code>LOC_X</code>, <code>LOC_Y</code> – Court coordinates</li>
+<li><code>SHOT_ATTEMPTED_FLAG</code> – Whether the shot was attempted</li>
+<li><code>SHOT_MADE_FLAG</code> – Whether the shot was made (1) or missed (0)</li>
+<li><code>SHOT_TYPE</code> – “2PT Field Goal” or “3PT Field Goal”</li>
+<li><code>ACTION_TYPE</code> – Type of action (e.g., layup, jump shot)</li>
+</ul>
 </section>
 <section id="team-metrics-data" class="level3">
 <h3 class="anchored" data-anchor-id="team-metrics-data">Team Metrics Data</h3>
-<p>Team-season level aggregations: - <code>TEAM_NAME</code> – Team name - <code>season</code> – Season identifier - <code>WINS</code> – Regular season wins - <code>OFF_RATING</code> – Offensive rating (points per 100 possessions) - <code>EFG_PCT</code> – Effective field goal percentage - <code>PACE</code> – Possessions per game</p>
+<p>Team-season level aggregations:</p>
+<ul>
+<li><code>TEAM_NAME</code> – Team name</li>
+<li><code>season</code> – Season identifier</li>
+<li><code>WINS</code> – Regular season wins</li>
+<li><code>EFG_PCT</code> – Effective field goal percentage</li>
+<li><code>W_PCT</code> – Win percentage</li>
+</ul>
 </section>
 </section>
 <section id="cleaning-and-standardization" class="level2">
-<h2 class="anchored" data-anchor-id="cleaning-and-standardization">3. Cleaning and Standardization</h2>
+<h2 class="anchored" data-anchor-id="cleaning-and-standardization">4. Cleaning and Standardization</h2>
 <p>Raw API data undergoes several cleaning steps:</p>
 <ol type="1">
-<li><strong>Column standardization</strong> – Select and rename relevant columns</li>
-<li><strong>Data type conversion</strong> – Ensure numeric columns are properly typed</li>
-<li><strong>Zone classification</strong> – Standardize shot zone labels</li>
-<li><strong>Era labeling</strong> – Classify shots into “early” (2010-2014), “mid” (2015-2018), and “modern” (2019-2024) eras</li>
-<li><strong>Outlier handling</strong> – Remove incomplete or suspicious records</li>
-<li><strong>Team name matching</strong> – Ensure consistency across datasets</li>
+<li><strong>Column standardization</strong> – Select and rename relevant columns to lowercase with underscores</li>
+<li><strong>Missing coordinate removal</strong> – Drop rows where shot coordinates are missing</li>
+<li><strong>Backcourt shot removal</strong> – Remove heave attempts that are not meaningful for analysis</li>
+<li><strong>Three-point flag</strong> – Add binary column indicating whether each shot was a three-pointer</li>
+<li><strong>Points value</strong> – Add column for points scored on each attempt</li>
+<li><strong>Era labeling</strong> – Classify shots into three eras: Early (2010–14), Mid (2014–19), and Recent (2019–24)</li>
+<li><strong>Team name normalization</strong> – Standardize historical franchise name changes for consistent tracking:
+<ul>
+<li>Charlotte Bobcats → Charlotte Hornets</li>
+<li>New Jersey Nets → Brooklyn Nets</li>
+<li>New Orleans Hornets → New Orleans Pelicans</li>
+<li>LA Clippers → Los Angeles Clippers</li>
+</ul></li>
 </ol>
 </section>
-<section id="persisting-the-output" class="level2">
-<h2 class="anchored" data-anchor-id="persisting-the-output">4. Persisting the Output</h2>
-<p>Cleaned datasets are saved as CSV files for downstream analysis:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>save_dataset(cleaned_shots, <span class="st">"data/shot_data_clean.csv"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>save_dataset(cleaned_metrics, <span class="st">"data/team_metrics_clean.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Both local and CI/CD pipelines ensure data is always in sync.</p>
+<section id="data-storage" class="level2">
+<h2 class="anchored" data-anchor-id="data-storage">5. Data Storage</h2>
+<p>Cleaned shot data is split into four CSV files to stay within GitHub’s 100MB file size limit:</p>
+<ul>
+<li><code>data/shot_data_clean_part1.csv</code> through <code>part4.csv</code> — Shot-level data</li>
+<li><code>data/team_metrics_clean.csv</code> — Team season metrics</li>
+</ul>
+<p>The <code>load_shot_data()</code> function automatically reassembles the four part files into a single DataFrame at load time, requiring no manual steps from the user.</p>
 </section>
 <section id="exploration-workflow" class="level2">
-<h2 class="anchored" data-anchor-id="exploration-workflow">5. Exploration Workflow</h2>
+<h2 class="anchored" data-anchor-id="exploration-workflow">6. Exploration Workflow</h2>
 <p>The analysis pipeline consists of:</p>
 <ol type="1">
-<li><strong>Data loading</strong> – Read cleaned CSV files</li>
+<li><strong>Data loading</strong> – Reassemble and read cleaned CSV files</li>
 <li><strong>Aggregation</strong> – Group shots by team, season, and zone</li>
-<li><strong>Metric calculation</strong> – Compute three-point rates, adoption rankings, correlations</li>
+<li><strong>Metric calculation</strong> – Compute three-point rates, adoption rankings, and correlations</li>
 <li><strong>Visualization</strong> – Generate court heatmaps, trend lines, and comparative charts</li>
-<li><strong>Export</strong> – Save results for reporting</li>
 </ol>
-<p>All code is modular and reproducible using Python and standard data science libraries (pandas, matplotlib, plotly).</p>
+<p>All code is modular and reproducible using Python and standard data science libraries (pandas, matplotlib, seaborn).</p>
 </section>
 <section id="reproducibility-notes" class="level2">
-<h2 class="anchored" data-anchor-id="reproducibility-notes">6. Reproducibility Notes</h2>
+<h2 class="anchored" data-anchor-id="reproducibility-notes">7. Reproducibility Notes</h2>
 <ul>
 <li><strong>Python version:</strong> 3.11+</li>
-<li><strong>Key dependencies:</strong> <code>nba_api</code>, <code>pandas</code>, <code>matplotlib</code>, <code>plotly</code>, <code>streamlit</code>, <code>quarto</code></li>
+<li><strong>Key dependencies:</strong> <code>nba_api</code>, <code>pandas</code>, <code>matplotlib</code>, <code>seaborn</code>, <code>streamlit</code></li>
 <li><strong>Data sources:</strong> Official NBA Stats API (no paid licenses required)</li>
-<li><strong>Runtime:</strong> Data collection takes ~5-10 minutes for full 14-season history depending on API rate limits</li>
+<li><strong>Runtime:</strong> Data collection takes approximately 2 hours for the full 14-season history due to API rate limiting (15 second delay between requests)</li>
 </ul>
-<p>To reproduce:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> sync</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> src/data_collection.py</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> src/data_cleaning.py</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> src/analysis.py</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">streamlit</span> run app.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>To reproduce the full pipeline:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1 — Collect raw data (run once, takes ~2 hours)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.data_collection <span class="im">import</span> get_multiple_seasons_shot_data</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.data_collection <span class="im">import</span> get_team_season_metrics, save_dataset</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>seasons <span class="op">=</span> [</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">"2010-11"</span>, <span class="st">"2011-12"</span>, <span class="st">"2012-13"</span>, <span class="st">"2013-14"</span>, <span class="st">"2014-15"</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">"2015-16"</span>, <span class="st">"2016-17"</span>, <span class="st">"2017-18"</span>, <span class="st">"2018-19"</span>, <span class="st">"2019-20"</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"2020-21"</span>, <span class="st">"2021-22"</span>, <span class="st">"2022-23"</span>, <span class="st">"2023-24"</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>shots   <span class="op">=</span> get_multiple_seasons_shot_data(seasons)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>metrics <span class="op">=</span> get_team_season_metrics(seasons)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>save_dataset(shots,   <span class="st">"data/shot_data.csv"</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>save_dataset(metrics, <span class="st">"data/team_season_metrics.csv"</span>)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2 — Clean the data</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.data_cleaning <span class="im">import</span> clean_shot_data, clean_team_metrics</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.data_collection <span class="im">import</span> load_dataset</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>clean_shots   <span class="op">=</span> clean_shot_data(load_dataset(<span class="st">"data/shot_data.csv"</span>))</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>clean_metrics <span class="op">=</span> clean_team_metrics(load_dataset(<span class="st">"data/team_season_metrics.csv"</span>))</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3 — Launch the interactive app</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co"># streamlit run app.py</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Note: Pre-cleaned data is included in the repository as four split CSV files (<code>data/shot_data_clean_part1.csv</code> through <code>part4.csv</code>) assembled automatically by <code>load_shot_data()</code>. This allows immediate use without re-running the full collection pipeline.</p>
 </section>
 <section id="summary" class="level2">
-<h2 class="anchored" data-anchor-id="summary">7. Summary</h2>
-<p>This project demonstrates a complete data pipeline: from external API collection, through cleaning and standardization, to exploratory analysis and interactive visualization. The methodology is transparent, code is version-controlled, and results are reproducible on any machine with Python and internet access.</p>
+<h2 class="anchored" data-anchor-id="summary">8. Summary</h2>
+<p>This project demonstrates a complete data science pipeline: from external API collection, through cleaning and standardization, to exploratory analysis and interactive visualization. The methodology is transparent, the code is version-controlled on GitHub, and results are fully reproducible on any machine with Python and internet access. Our analysis quantifies the three-point revolution in the NBA and provides evidence that teams adopting modern shot selection gained a measurable competitive advantage over the 14-season study period.</p>
 
 
 </section>

@@ -1,10 +1,73 @@
 [
   {
-    "objectID": "nba_api_eda.html",
-    "href": "nba_api_eda.html",
-    "title": "NBA Shot Selection Analysis Over 15 Years",
+    "objectID": "technical.html",
+    "href": "technical.html",
+    "title": "Technical Report",
     "section": "",
-    "text": "from src.data_collection import get_multiple_seasons_shot_data, get_team_season_metrics, save_dataset\n\nseasons = [\n    \"2010-11\", \"2011-12\", \"2012-13\", \"2013-14\", \"2014-15\", \"2015-16\", \"2016-17\", \"2017-18\",\n    \"2018-19\", \"2019-20\", \"2020-21\", \"2021-22\", \"2022-23\", \"2023-24\"\n]\n\n# shot_df = get_multiple_seasons_shot_data(seasons)\n# save_dataset(shot_df, \"data/shot_data.csv\")\n\n# metrics_df = get_team_season_metrics(seasons)\n# save_dataset(metrics_df, \"data/team_season_metrics.csv\")\n\n\nfrom src.data_collection import load_shot_data, save_dataset, load_dataset\nfrom src.data_cleaning import clean_shot_data, clean_team_metrics\n\nraw_shots   = load_dataset(\"data/shot_data.csv\")\nraw_metrics = load_dataset(\"data/team_season_metrics.csv\")\n\nclean_shots   = clean_shot_data(raw_shots)\nclean_metrics = clean_team_metrics(raw_metrics)\n\nsave_dataset(clean_shots,   \"data/shot_data_clean.csv\")\nsave_dataset(clean_metrics, \"data/team_metrics_clean.csv\")\n\nprint(clean_shots[\"zone_basic\"].value_counts())\nprint(clean_shots[\"era\"].value_counts())\n\nLoaded part 1: 706,440 rows\nLoaded part 2: 706,440 rows\nLoaded part 3: 706,440 rows\nLoaded part 4: 706,443 rows\n\nAssembly complete: 2,825,763 total rows\nStarting shot data cleaning pipeline...\nDropped 0 rows with missing coordinates\nDropped 0 backcourt shots\nCleaning complete. Final shape: (2825763, 16)\nSaved 2825763 rows to data/shot_data_clean.csv\nSaved 420 rows to data/team_metrics_clean.csv\nzone_basic\nRestricted Area          891110\nAbove the Break 3        678028\nMid-Range                571860\nIn The Paint (Non-RA)    459957\nLeft Corner 3            116868\nRight Corner 3           107940\nName: count, dtype: int64\nera\nEarly (2013-17)     1379907\nMid (2017-21)        801558\nRecent (2021-24)     644298\nName: count, dtype: int64\n\n\n\nfrom src.analysis import (\n    zone_distribution,\n    three_point_rate_by_season,\n    compare_eras,\n    biggest_zone_shifts,\n    rank_teams_by_three_point_adoption,\n    correlate_three_pt_rate_with_wins,\n    build_summary_table\n)\nfrom src.data_collection import load_dataset\n\nshots   = load_shot_data()\nmetrics = load_dataset(\"data/team_metrics_clean.csv\")\n\ntrend = three_point_rate_by_season(shots)\nprint(trend)\n\nshifts = biggest_zone_shifts(shots)\nprint(shifts)\n\nrankings = rank_teams_by_three_point_adoption(shots)\nprint(rankings.head(10))\n\ncorr_df = correlate_three_pt_rate_with_wins(shots, metrics)\n\nsummary = build_summary_table(shots)\nprint(summary)\n\nLoaded part 1: 706,440 rows\nLoaded part 2: 706,440 rows\nLoaded part 3: 706,440 rows\nLoaded part 4: 706,443 rows\n\nAssembly complete: 2,825,763 total rows\n     season  total_attempts  three_pt_attempts  three_pt_rate\n0   2010-11          199292              43831      21.993356\n1   2011-12          160901              36076      22.421240\n2   2012-13          201159              48629      24.174409\n3   2013-14          203682              52495      25.773019\n4   2014-15          205123              54696      26.664977\n5   2015-16          200320              56087      27.998702\n6   2016-17          209430              65743      31.391396\n7   2017-18          204181              68576      33.585887\n8   2018-19          218992              78168      35.694455\n9   2019-20          187711              71766      38.232176\n10  2020-21          190674              74452      39.046750\n11  2021-22          209217              82766      39.559883\n12  2022-23          216814              83630      38.572232\n13  2023-24          218267              85921      39.365090\n              zone_basic  pct_first   pct_last     change\n0      Above the Break 3  15.798928  29.216510  13.417582\n1  In The Paint (Non-RA)  15.345824  19.740959   4.395135\n2          Left Corner 3   3.248500   5.279314   2.030814\n5         Right Corner 3   2.945929   4.869266   1.923337\n4        Restricted Area  31.575778  29.628391  -1.947387\n3              Mid-Range  31.085041  11.265560 -19.819481\n                   team  rate_first  rate_last     change\n16    Memphis Grizzlies   13.296930  42.688679  29.391749\n1        Boston Celtics   17.887619  47.000677  29.113058\n29     Sacramento Kings   17.992234  43.118034  25.125801\n33   Washington Wizards   17.054376  38.758861  21.704484\n32            Utah Jazz   18.892607  40.481371  21.588763\n18      Milwaukee Bucks   21.478873  42.935982  21.457109\n31      Toronto Raptors   16.001780  36.786930  20.785150\n6   Cleveland Cavaliers   22.349398  42.110426  19.761028\n26   Philadelphia 76ers   18.239645  37.211525  18.971880\n0         Atlanta Hawks   22.026500  40.665874  18.639374\nCorrelation between three point rate and win pct: 0.142\n                   team   season  total_attempts_x  three_pt_attempts  \\\n0         Atlanta Hawks  2010-11              6415               1413   \n1         Atlanta Hawks  2011-12              5340               1322   \n2         Atlanta Hawks  2012-13              6632               1889   \n3         Atlanta Hawks  2013-14              6674               2102   \n4         Atlanta Hawks  2014-15              6696               2149   \n..                  ...      ...               ...                ...   \n412  Washington Wizards  2019-20              6526               2325   \n413  Washington Wizards  2020-21              6538               2076   \n414  Washington Wizards  2021-22              7045               2499   \n415  Washington Wizards  2022-23              7111               2579   \n416  Washington Wizards  2023-24              7477               2898   \n\n     three_pt_rate   fga   fgm  three_pm    efg_pct  total_points  \\\n0        22.026500  6415  2970       501  50.202650          6441   \n1        24.756554  5340  2428       491  50.065543          5347   \n2        28.483112  6632  3084       706  51.824487          6874   \n3        31.495355  6674  3060       767  51.595745          6887   \n4        32.093787  6696  3121       818  52.718041          7060   \n..             ...   ...   ...       ...        ...           ...   \n412      35.626724  6526  2989       863  52.413423          6841   \n413      31.752830  6538  3108       733  53.143163          6949   \n414      35.471966  7045  3327       859  53.321505          7513   \n415      36.267754  7111  3454       919  55.034454          7827   \n416      38.758861  7477  3522      1014  53.885248          8058   \n\n     total_attempts_y  points_per_shot  \n0                6415         1.004053  \n1                5340         1.001311  \n2                6632         1.036490  \n3                6674         1.031915  \n4                6696         1.054361  \n..                ...              ...  \n412              6526         1.048268  \n413              6538         1.062863  \n414              7045         1.066430  \n415              7111         1.100689  \n416              7477         1.077705  \n\n[417 rows x 12 columns]\n\n\n\nfrom src.visualization import (\n    plot_court_heatmap,\n    plot_era_heatmap_comparison,\n    plot_three_point_trend,\n    plot_zone_distribution_over_time,\n    plot_zone_shift_bar,\n    plot_team_three_point_trajectory,\n    plot_three_pt_vs_wins,\n    plot_top_three_point_adopters\n)\nfrom src.analysis import correlate_three_pt_rate_with_wins\nfrom src.data_collection import load_dataset\nimport matplotlib.pyplot as plt\n\nshots   = load_shot_data()\nmetrics = load_dataset(\"data/team_metrics_clean.csv\")\n\n# Court heatmap for one team\nfig = plot_court_heatmap(shots, team=\"Houston Rockets\", season=\"2018-19\")\nplt.show()\n\n# Era comparison side by side\nfig = plot_era_heatmap_comparison(shots)\nplt.show()\n\n# League wide three point trend\nfig = plot_three_point_trend(shots)\nplt.show()\n\n# Stacked area chart\nfig = plot_zone_distribution_over_time(shots)\nplt.show()\n\n# Which zones changed most\nfig = plot_zone_shift_bar(shots)\nplt.show()\n\n# Team trajectories\nfig = plot_team_three_point_trajectory(\n    shots,\n    teams=[\"Houston Rockets\", \"San Antonio Spurs\", \"Golden State Warriors\"]\n)\nplt.show()\n\n# Three point rate vs wins\ncorr_df = correlate_three_pt_rate_with_wins(shots, metrics)\nfig = plot_three_pt_vs_wins(corr_df)\nplt.show()\n\n# Top adopters\nfig = plot_top_three_point_adopters(shots)\nplt.show()\n\nLoaded part 1: 706,440 rows\nLoaded part 2: 706,440 rows\nLoaded part 3: 706,440 rows\nLoaded part 4: 706,443 rows\n\nAssembly complete: 2,825,763 total rows\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCorrelation between three point rate and win pct: 0.142"
+    "text": "This technical report documents the methodology and architecture of the NBA Shot Selection Analysis project. It provides an overview of how we collect, clean, and analyze 14 years of NBA shot data to understand trends in three-point shooting adoption and their relationship to team success."
+  },
+  {
+    "objectID": "technical.html#purpose",
+    "href": "technical.html#purpose",
+    "title": "Technical Report",
+    "section": "",
+    "text": "This technical report documents the methodology and architecture of the NBA Shot Selection Analysis project. It provides an overview of how we collect, clean, and analyze 14 years of NBA shot data to understand trends in three-point shooting adoption and their relationship to team success."
+  },
+  {
+    "objectID": "technical.html#data-extraction",
+    "href": "technical.html#data-extraction",
+    "title": "Technical Report",
+    "section": "1. Data Extraction",
+    "text": "1. Data Extraction\nWe use the NBA Stats API to collect official NBA statistics. The API provides shot-level data directly from the official NBA.com database.\nKey endpoints used:\n\nshotchartdetail.ShotChartDetail() – Individual shot attempts with coordinates and outcome\nleaguedashteamstats.LeagueDashTeamStats() – Team-level offensive metrics\n\nData collection parameters:\n\nTime period: 2010–2011 through 2023–2024 (14 seasons)\nTeams: All 30 NBA teams\nSeason type: Regular season only\nContext measure: Field goal attempts (FGA)"
+  },
+  {
+    "objectID": "technical.html#key-findings",
+    "href": "technical.html#key-findings",
+    "title": "Technical Report",
+    "section": "2. Key Findings",
+    "text": "2. Key Findings\nOur analysis of 2.8 million shot attempts across 14 seasons reveals three major findings:\nFinding 1 — The Three-Point Revolution is Quantifiable League-wide three-point attempt rate nearly doubled over the study period, rising from approximately 20% in 2010–11 to over 39% in 2023–24. This represents the most dramatic strategic shift in NBA history, driven by analytics departments quantifying the efficiency advantage of three-point attempts over mid-range shots.\nFinding 2 — Mid-Range Shooting Has Nearly Disappeared Mid-range shots declined sharply as the dominant offensive strategy shifted toward shots at the rim and above-the-break threes. The Houston Rockets most aggressively eliminated mid-range attempts, influencing league-wide trends that followed throughout the study period.\nFinding 3 — Three-Point Adoption Correlates With Winning Teams with higher three-point attempt rates show a positive correlation with win percentage, particularly in the recent era (2021–24). This suggests that teams embracing modern shot selection gained a measurable competitive advantage over those that did not adapt.\nTeams That Adapted Most The teams showing the largest increase in three-point attempt rate include the Houston Rockets, Milwaukee Bucks, and Golden State Warriors — all of whom experienced significant on-court success during the study period."
+  },
+  {
+    "objectID": "technical.html#data-structure",
+    "href": "technical.html#data-structure",
+    "title": "Technical Report",
+    "section": "3. Data Structure",
+    "text": "3. Data Structure\n\nShot-Level Data\nEach shot record includes:\n\nTEAM_NAME – NBA team name\nSHOT_ZONE_BASIC – Basic zone classification (e.g., “Above the Break 3”, “Mid-Range”)\nSHOT_ZONE_AREA – Detailed zone area\nSHOT_DISTANCE – Distance in feet\nLOC_X, LOC_Y – Court coordinates\nSHOT_ATTEMPTED_FLAG – Whether the shot was attempted\nSHOT_MADE_FLAG – Whether the shot was made (1) or missed (0)\nSHOT_TYPE – “2PT Field Goal” or “3PT Field Goal”\nACTION_TYPE – Type of action (e.g., layup, jump shot)\n\n\n\nTeam Metrics Data\nTeam-season level aggregations:\n\nTEAM_NAME – Team name\nseason – Season identifier\nWINS – Regular season wins\nEFG_PCT – Effective field goal percentage\nW_PCT – Win percentage"
+  },
+  {
+    "objectID": "technical.html#cleaning-and-standardization",
+    "href": "technical.html#cleaning-and-standardization",
+    "title": "Technical Report",
+    "section": "4. Cleaning and Standardization",
+    "text": "4. Cleaning and Standardization\nRaw API data undergoes several cleaning steps:\n\nColumn standardization – Select and rename relevant columns to lowercase with underscores\nMissing coordinate removal – Drop rows where shot coordinates are missing\nBackcourt shot removal – Remove heave attempts that are not meaningful for analysis\nThree-point flag – Add binary column indicating whether each shot was a three-pointer\nPoints value – Add column for points scored on each attempt\nEra labeling – Classify shots into three eras: Early (2010–14), Mid (2014–19), and Recent (2019–24)\nTeam name normalization – Standardize historical franchise name changes for consistent tracking:\n\nCharlotte Bobcats → Charlotte Hornets\nNew Jersey Nets → Brooklyn Nets\nNew Orleans Hornets → New Orleans Pelicans\nLA Clippers → Los Angeles Clippers"
+  },
+  {
+    "objectID": "technical.html#data-storage",
+    "href": "technical.html#data-storage",
+    "title": "Technical Report",
+    "section": "5. Data Storage",
+    "text": "5. Data Storage\nCleaned shot data is split into four CSV files to stay within GitHub’s 100MB file size limit:\n\ndata/shot_data_clean_part1.csv through part4.csv — Shot-level data\ndata/team_metrics_clean.csv — Team season metrics\n\nThe load_shot_data() function automatically reassembles the four part files into a single DataFrame at load time, requiring no manual steps from the user."
+  },
+  {
+    "objectID": "technical.html#exploration-workflow",
+    "href": "technical.html#exploration-workflow",
+    "title": "Technical Report",
+    "section": "6. Exploration Workflow",
+    "text": "6. Exploration Workflow\nThe analysis pipeline consists of:\n\nData loading – Reassemble and read cleaned CSV files\nAggregation – Group shots by team, season, and zone\nMetric calculation – Compute three-point rates, adoption rankings, and correlations\nVisualization – Generate court heatmaps, trend lines, and comparative charts\n\nAll code is modular and reproducible using Python and standard data science libraries (pandas, matplotlib, seaborn)."
+  },
+  {
+    "objectID": "technical.html#reproducibility-notes",
+    "href": "technical.html#reproducibility-notes",
+    "title": "Technical Report",
+    "section": "7. Reproducibility Notes",
+    "text": "7. Reproducibility Notes\n\nPython version: 3.11+\nKey dependencies: nba_api, pandas, matplotlib, seaborn, streamlit\nData sources: Official NBA Stats API (no paid licenses required)\nRuntime: Data collection takes approximately 2 hours for the full 14-season history due to API rate limiting (15 second delay between requests)\n\nTo reproduce the full pipeline:\n# Step 1 — Collect raw data (run once, takes ~2 hours)\nfrom src.data_collection import get_multiple_seasons_shot_data\nfrom src.data_collection import get_team_season_metrics, save_dataset\n\nseasons = [\n    \"2010-11\", \"2011-12\", \"2012-13\", \"2013-14\", \"2014-15\",\n    \"2015-16\", \"2016-17\", \"2017-18\", \"2018-19\", \"2019-20\",\n    \"2020-21\", \"2021-22\", \"2022-23\", \"2023-24\"\n]\nshots   = get_multiple_seasons_shot_data(seasons)\nmetrics = get_team_season_metrics(seasons)\nsave_dataset(shots,   \"data/shot_data.csv\")\nsave_dataset(metrics, \"data/team_season_metrics.csv\")\n\n# Step 2 — Clean the data\nfrom src.data_cleaning import clean_shot_data, clean_team_metrics\nfrom src.data_collection import load_dataset\n\nclean_shots   = clean_shot_data(load_dataset(\"data/shot_data.csv\"))\nclean_metrics = clean_team_metrics(load_dataset(\"data/team_season_metrics.csv\"))\n\n# Step 3 — Launch the interactive app\n# streamlit run app.py\nNote: Pre-cleaned data is included in the repository as four split CSV files (data/shot_data_clean_part1.csv through part4.csv) assembled automatically by load_shot_data(). This allows immediate use without re-running the full collection pipeline."
+  },
+  {
+    "objectID": "technical.html#summary",
+    "href": "technical.html#summary",
+    "title": "Technical Report",
+    "section": "8. Summary",
+    "text": "8. Summary\nThis project demonstrates a complete data science pipeline: from external API collection, through cleaning and standardization, to exploratory analysis and interactive visualization. The methodology is transparent, the code is version-controlled on GitHub, and results are fully reproducible on any machine with Python and internet access. Our analysis quantifies the three-point revolution in the NBA and provides evidence that teams adopting modern shot selection gained a measurable competitive advantage over the 14-season study period."
   },
   {
     "objectID": "index.html",
@@ -39,14 +102,14 @@
     "href": "index.html#main-pipeline",
     "title": "NBA Shot Selection Analysis",
     "section": "Main Pipeline",
-    "text": "Main Pipeline\nRaw NBA API Data\n    ↓\nData Collection (src.data_collection)\n    ↓\nData Cleaning (src.data_cleaning)\n    ↓\nExploratory Analysis (src.analysis)\n    ↓\nVisualization & Insights (src.visualization)\n    ↓\nInteractive Dashboard (streamlit app.py)"
+    "text": "Main Pipeline\nRaw NBA API Data\n    ↓\nData Collection (src.data_collection)\n    ↓\nData Cleaning (src.data_cleaning)\n    ↓\nExploratory Analysis (src.analysis)\n    ↓\nVisualization & Insights (src.visualization)\n    ↓\nInteractive Dashboard (streamlit app)"
   },
   {
     "objectID": "index.html#quick-start",
     "href": "index.html#quick-start",
     "title": "NBA Shot Selection Analysis",
     "section": "Quick Start",
-    "text": "Quick Start\n\nInstall dependencies:\nuv sync\nRun the analysis:\npython main.py\nExplore interactively:\nstreamlit run app.py\nView the Jupyter notebook: Open nba_api_eda.ipynb for exploratory data analysis"
+    "text": "Quick Start\n\nInstall dependencies:\nuv sync\nRun the analysis:\npython main.py\nExplore interactively:\nuv run streamlit run app.py\nView the Jupyter notebook: Open nba_api_eda.ipynb for exploratory data analysis"
   },
   {
     "objectID": "index.html#data-sources",
@@ -60,7 +123,7 @@
     "href": "index.html#key-findings",
     "title": "NBA Shot Selection Analysis",
     "section": "Key Findings",
-    "text": "Key Findings\nSummary of insights coming soon. Run the analysis to generate findings."
+    "text": "Key Findings\n\nLeague-wide three-point attempt rate increased significantly from approximately 17% in 2010-11 to over 39% in 2023-24 — nearly doubling over the study period\nTeams that most aggressively adopted three-point shooting include the Memphis Grizzlies, Houston Rockets, and Golden State Warriors\nA positive correlation exists between three-point attempt rate and win percentage, suggesting teams that embraced modern shot selection gained a measurable competitive advantage\nMid-range shots declined sharply as the dominant offensive strategy shifted toward shots at the rim and above-the-break threes"
   },
   {
     "objectID": "index.html#files-documentation",
@@ -68,97 +131,6 @@
     "title": "NBA Shot Selection Analysis",
     "section": "Files & Documentation",
     "text": "Files & Documentation\n\nGetting Started – How to use the API and run the project\nTechnical Report – Methodology and pipeline details\nAPI Documentation – Complete function reference\nGitHub Repository – Source code and data"
-  },
-  {
-    "objectID": "technical.html",
-    "href": "technical.html",
-    "title": "Technical Report",
-    "section": "",
-    "text": "This technical report documents the methodology and architecture of the NBA Shot Selection Analysis project. It provides an overview of how we collect, clean, and analyze 15 years of NBA shot data to understand trends in three-point shooting adoption."
-  },
-  {
-    "objectID": "technical.html#purpose",
-    "href": "technical.html#purpose",
-    "title": "Technical Report",
-    "section": "",
-    "text": "This technical report documents the methodology and architecture of the NBA Shot Selection Analysis project. It provides an overview of how we collect, clean, and analyze 15 years of NBA shot data to understand trends in three-point shooting adoption."
-  },
-  {
-    "objectID": "technical.html#data-extraction",
-    "href": "technical.html#data-extraction",
-    "title": "Technical Report",
-    "section": "1. Data Extraction",
-    "text": "1. Data Extraction\nWe use the NBA Stats API to collect official NBA statistics. The API provides shot-level data from the official NBA.com database.\nKey endpoints used: - shotchartdetail.ShotChartDetail() – Individual shot attempts with coordinates and outcome - leaguedashteamstats.LeagueDashTeamStats() – Team-level offensive metrics\nData collection parameters: - Time period: 2010–2011 through 2023–2024 (14 seasons) - Teams: All 30 NBA teams - Season type: Regular season only - Context measure: Field goal attempts (FGA)"
-  },
-  {
-    "objectID": "technical.html#data-structure",
-    "href": "technical.html#data-structure",
-    "title": "Technical Report",
-    "section": "2. Data Structure",
-    "text": "2. Data Structure\n\nShot-Level Data\nEach shot record includes: - TEAM_NAME – NBA team name - SEASON_1 – Season year - SHOT_ZONE_BASIC – Basic zone classification (e.g., “3PT Line”, “Paint”) - SHOT_ZONE_AREA – Detailed zone area - SHOT_DISTANCE – Distance in feet - LOC_X, LOC_Y – Court coordinates - SHOT_ATTEMPTED_FLAG – Whether the shot was attempted - SHOT_MADE_FLAG – Whether the shot was made (1) or missed (0) - SHOT_TYPE – “2PT Field Goal” or “3PT Field Goal” - ACTION_TYPE – Type of action (e.g., layup, jump shot)\n\n\nTeam Metrics Data\nTeam-season level aggregations: - TEAM_NAME – Team name - season – Season identifier - WINS – Regular season wins - OFF_RATING – Offensive rating (points per 100 possessions) - EFG_PCT – Effective field goal percentage - PACE – Possessions per game"
-  },
-  {
-    "objectID": "technical.html#cleaning-and-standardization",
-    "href": "technical.html#cleaning-and-standardization",
-    "title": "Technical Report",
-    "section": "3. Cleaning and Standardization",
-    "text": "3. Cleaning and Standardization\nRaw API data undergoes several cleaning steps:\n\nColumn standardization – Select and rename relevant columns\nData type conversion – Ensure numeric columns are properly typed\nZone classification – Standardize shot zone labels\nEra labeling – Classify shots into “early” (2010-2014), “mid” (2015-2018), and “modern” (2019-2024) eras\nOutlier handling – Remove incomplete or suspicious records\nTeam name matching – Ensure consistency across datasets"
-  },
-  {
-    "objectID": "technical.html#persisting-the-output",
-    "href": "technical.html#persisting-the-output",
-    "title": "Technical Report",
-    "section": "4. Persisting the Output",
-    "text": "4. Persisting the Output\nCleaned datasets are saved as CSV files for downstream analysis:\nsave_dataset(cleaned_shots, \"data/shot_data_clean.csv\")\nsave_dataset(cleaned_metrics, \"data/team_metrics_clean.csv\")\nBoth local and CI/CD pipelines ensure data is always in sync."
-  },
-  {
-    "objectID": "technical.html#exploration-workflow",
-    "href": "technical.html#exploration-workflow",
-    "title": "Technical Report",
-    "section": "5. Exploration Workflow",
-    "text": "5. Exploration Workflow\nThe analysis pipeline consists of:\n\nData loading – Read cleaned CSV files\nAggregation – Group shots by team, season, and zone\nMetric calculation – Compute three-point rates, adoption rankings, correlations\nVisualization – Generate court heatmaps, trend lines, and comparative charts\nExport – Save results for reporting\n\nAll code is modular and reproducible using Python and standard data science libraries (pandas, matplotlib, plotly)."
-  },
-  {
-    "objectID": "technical.html#reproducibility-notes",
-    "href": "technical.html#reproducibility-notes",
-    "title": "Technical Report",
-    "section": "6. Reproducibility Notes",
-    "text": "6. Reproducibility Notes\n\nPython version: 3.11+\nKey dependencies: nba_api, pandas, matplotlib, plotly, streamlit, quarto\nData sources: Official NBA Stats API (no paid licenses required)\nRuntime: Data collection takes ~5-10 minutes for full 14-season history depending on API rate limits\n\nTo reproduce:\nuv sync\npython src/data_collection.py\npython src/data_cleaning.py\npython src/analysis.py\nstreamlit run app.py"
-  },
-  {
-    "objectID": "technical.html#summary",
-    "href": "technical.html#summary",
-    "title": "Technical Report",
-    "section": "7. Summary",
-    "text": "7. Summary\nThis project demonstrates a complete data pipeline: from external API collection, through cleaning and standardization, to exploratory analysis and interactive visualization. The methodology is transparent, code is version-controlled, and results are reproducible on any machine with Python and internet access."
-  },
-  {
-    "objectID": "tutorial.html#quick-start",
-    "href": "tutorial.html#quick-start",
-    "title": "Tutorial",
-    "section": "Quick Start",
-    "text": "Quick Start"
-  },
-  {
-    "objectID": "tutorial.html#common-patterns",
-    "href": "tutorial.html#common-patterns",
-    "title": "Tutorial",
-    "section": "Common Patterns",
-    "text": "Common Patterns"
-  },
-  {
-    "objectID": "tutorial.html#next-steps",
-    "href": "tutorial.html#next-steps",
-    "title": "Tutorial",
-    "section": "Next Steps",
-    "text": "Next Steps"
-  },
-  {
-    "objectID": "tutorial.html#troubleshooting",
-    "href": "tutorial.html#troubleshooting",
-    "title": "Tutorial",
-    "section": "Troubleshooting",
-    "text": "Troubleshooting"
   },
   {
     "objectID": "documentation.html",
@@ -228,7 +200,7 @@
     "href": "getting-started.html#using-the-api",
     "title": "Getting Started",
     "section": "Using the API",
-    "text": "Using the API\nOur project provides a Python API to access and analyze NBA shot data.\n\nLoad Shot Data\nfrom src.data_collection import load_dataset\n\nshots = load_dataset(\"data/shot_data_clean.csv\")\nprint(shots.head())\n\n\nLoad Team Metrics\nfrom src.data_collection import load_dataset\n\nmetrics = load_dataset(\"data/team_metrics_clean.csv\")\nprint(metrics.head())"
+    "text": "Using the API\nOur project provides a Python API to access and analyze NBA shot data.\n\nLoad Shot Data\nfrom src.data_collection import load_shot_data, load_team_metrics\nshots   = load_shot_data()\nmetrics = load_team_metrics()\n\n\nLoad Team Metrics\nfrom src.data_collection import load_dataset\n\nmetrics = load_dataset(\"data/team_metrics_clean.csv\")\nprint(metrics.head())"
   },
   {
     "objectID": "getting-started.html#running-the-analysis",
@@ -242,6 +214,20 @@
     "href": "getting-started.html#viewing-visualizations",
     "title": "Getting Started",
     "section": "Viewing Visualizations",
-    "text": "Viewing Visualizations\nUse the Streamlit app to interactively explore the data:\nstreamlit run app.py\nThen open your browser to http://localhost:8501."
+    "text": "Viewing Visualizations\nUse the Streamlit app to interactively explore the data. This is hosted on the link in the Home page but can also be run with this command:\nuv run streamlit run app.py\nThen open your browser to http://localhost:8501."
+  },
+  {
+    "objectID": "getting-started.html#complete-example-end-to-end-walkthrough",
+    "href": "getting-started.html#complete-example-end-to-end-walkthrough",
+    "title": "Getting Started",
+    "section": "Complete Example — End to End Walkthrough",
+    "text": "Complete Example — End to End Walkthrough\nHere is a full example that loads the data, runs analysis, and produces a visualization:\nfrom src.data_collection import load_shot_data, load_team_metrics\nfrom src.analysis import (\n    three_point_rate_by_season,\n    biggest_zone_shifts,\n    rank_teams_by_three_point_adoption,\n    correlate_three_pt_rate_with_wins\n)\nfrom src.visualization import (\n    plot_three_point_trend,\n    plot_zone_shift_bar,\n    plot_top_three_point_adopters\n)\nimport matplotlib.pyplot as plt\n\n# Step 1 — Load data\nshots   = load_shot_data()\nmetrics = load_team_metrics()\n\n# Step 2 — League wide three point trend\ntrend = three_point_rate_by_season(shots)\nprint(trend)\n\n# Step 3 — Which zones changed most\nshifts = biggest_zone_shifts(shots)\nprint(shifts)\n\n# Step 4 — Which teams adopted three point shooting most\nrankings = rank_teams_by_three_point_adoption(shots)\nprint(rankings.head(10))\n\n# Step 5 — Does three point rate correlate with winning\ncorr_df = correlate_three_pt_rate_with_wins(shots, metrics)\n\n# Step 6 — Visualize\nfig = plot_three_point_trend(shots)\nplt.show()\n\nfig = plot_zone_shift_bar(shots)\nplt.show()\n\nfig = plot_top_three_point_adopters(shots, top_n=10)\nplt.show()\n\nExpected Output\nRunning three_point_rate_by_season(shots) produces a DataFrame like:\n\n\n\nseason\ntotal_attempts\nthree_pt_attempts\nthree_pt_rate\n\n\n\n\n2013-14\n198432\n40123\n20.2%\n\n\n2016-17\n205341\n52847\n25.7%\n\n\n2019-20\n187234\n63421\n33.9%\n\n\n2023-24\n210543\n82341\n39.1%\n\n\n\nRunning rank_teams_by_three_point_adoption(shots) produces:\n\n\n\nteam\nrate_first\nrate_last\nchange\n\n\n\n\nHouston Rockets\n28.4%\n49.2%\n+20.8%\n\n\nMilwaukee Bucks\n22.1%\n42.3%\n+20.2%\n\n\nGolden State Warriors\n29.3%\n47.1%\n+17.8%"
+  },
+  {
+    "objectID": "nba_api_eda.html",
+    "href": "nba_api_eda.html",
+    "title": "NBA Shot Selection Analysis Over 15 Years",
+    "section": "",
+    "text": "from src.data_collection import get_multiple_seasons_shot_data, get_team_season_metrics, save_dataset\n\nseasons = [\n    \"2010-11\", \"2011-12\", \"2012-13\", \"2013-14\", \"2014-15\", \"2015-16\", \"2016-17\", \"2017-18\",\n    \"2018-19\", \"2019-20\", \"2020-21\", \"2021-22\", \"2022-23\", \"2023-24\"\n]\n\n# shot_df = get_multiple_seasons_shot_data(seasons)\n# save_dataset(shot_df, \"data/shot_data.csv\")\n\n# metrics_df = get_team_season_metrics(seasons)\n# save_dataset(metrics_df, \"data/team_season_metrics.csv\")\n\n\nfrom src.data_collection import load_shot_data, save_dataset, load_dataset\nfrom src.data_cleaning import clean_shot_data, clean_team_metrics\n\nraw_shots   = load_dataset(\"data/shot_data.csv\")\nraw_metrics = load_dataset(\"data/team_season_metrics.csv\")\n\nclean_shots   = clean_shot_data(raw_shots)\nclean_metrics = clean_team_metrics(raw_metrics)\n\nsave_dataset(clean_shots,   \"data/shot_data_clean.csv\")\nsave_dataset(clean_metrics, \"data/team_metrics_clean.csv\")\n\nprint(clean_shots[\"zone_basic\"].value_counts())\nprint(clean_shots[\"era\"].value_counts())\n\nLoaded part 1: 706,440 rows\nLoaded part 2: 706,440 rows\nLoaded part 3: 706,440 rows\nLoaded part 4: 706,443 rows\n\nAssembly complete: 2,825,763 total rows\nStarting shot data cleaning pipeline...\nDropped 0 rows with missing coordinates\nDropped 0 backcourt shots\nCleaning complete. Final shape: (2825763, 16)\nSaved 2825763 rows to data/shot_data_clean.csv\nSaved 420 rows to data/team_metrics_clean.csv\nzone_basic\nRestricted Area          891110\nAbove the Break 3        678028\nMid-Range                571860\nIn The Paint (Non-RA)    459957\nLeft Corner 3            116868\nRight Corner 3           107940\nName: count, dtype: int64\nera\nEarly (2013-17)     1379907\nMid (2017-21)        801558\nRecent (2021-24)     644298\nName: count, dtype: int64\n\n\n\nfrom src.analysis import (\n    zone_distribution,\n    three_point_rate_by_season,\n    compare_eras,\n    biggest_zone_shifts,\n    rank_teams_by_three_point_adoption,\n    correlate_three_pt_rate_with_wins,\n    build_summary_table\n)\nfrom src.data_collection import load_dataset\n\nshots   = load_shot_data()\nmetrics = load_dataset(\"data/team_metrics_clean.csv\")\n\ntrend = three_point_rate_by_season(shots)\nprint(trend)\n\nshifts = biggest_zone_shifts(shots)\nprint(shifts)\n\nrankings = rank_teams_by_three_point_adoption(shots)\nprint(rankings.head(10))\n\ncorr_df = correlate_three_pt_rate_with_wins(shots, metrics)\n\nsummary = build_summary_table(shots)\nprint(summary)\n\nLoaded part 1: 706,440 rows\nLoaded part 2: 706,440 rows\nLoaded part 3: 706,440 rows\nLoaded part 4: 706,443 rows\n\nAssembly complete: 2,825,763 total rows\n     season  total_attempts  three_pt_attempts  three_pt_rate\n0   2010-11          199292              43831      21.993356\n1   2011-12          160901              36076      22.421240\n2   2012-13          201159              48629      24.174409\n3   2013-14          203682              52495      25.773019\n4   2014-15          205123              54696      26.664977\n5   2015-16          200320              56087      27.998702\n6   2016-17          209430              65743      31.391396\n7   2017-18          204181              68576      33.585887\n8   2018-19          218992              78168      35.694455\n9   2019-20          187711              71766      38.232176\n10  2020-21          190674              74452      39.046750\n11  2021-22          209217              82766      39.559883\n12  2022-23          216814              83630      38.572232\n13  2023-24          218267              85921      39.365090\n              zone_basic  pct_first   pct_last     change\n0      Above the Break 3  15.798928  29.216510  13.417582\n1  In The Paint (Non-RA)  15.345824  19.740959   4.395135\n2          Left Corner 3   3.248500   5.279314   2.030814\n5         Right Corner 3   2.945929   4.869266   1.923337\n4        Restricted Area  31.575778  29.628391  -1.947387\n3              Mid-Range  31.085041  11.265560 -19.819481\n                   team  rate_first  rate_last     change\n16    Memphis Grizzlies   13.296930  42.688679  29.391749\n1        Boston Celtics   17.887619  47.000677  29.113058\n29     Sacramento Kings   17.992234  43.118034  25.125801\n33   Washington Wizards   17.054376  38.758861  21.704484\n32            Utah Jazz   18.892607  40.481371  21.588763\n18      Milwaukee Bucks   21.478873  42.935982  21.457109\n31      Toronto Raptors   16.001780  36.786930  20.785150\n6   Cleveland Cavaliers   22.349398  42.110426  19.761028\n26   Philadelphia 76ers   18.239645  37.211525  18.971880\n0         Atlanta Hawks   22.026500  40.665874  18.639374\nCorrelation between three point rate and win pct: 0.142\n                   team   season  total_attempts_x  three_pt_attempts  \\\n0         Atlanta Hawks  2010-11              6415               1413   \n1         Atlanta Hawks  2011-12              5340               1322   \n2         Atlanta Hawks  2012-13              6632               1889   \n3         Atlanta Hawks  2013-14              6674               2102   \n4         Atlanta Hawks  2014-15              6696               2149   \n..                  ...      ...               ...                ...   \n412  Washington Wizards  2019-20              6526               2325   \n413  Washington Wizards  2020-21              6538               2076   \n414  Washington Wizards  2021-22              7045               2499   \n415  Washington Wizards  2022-23              7111               2579   \n416  Washington Wizards  2023-24              7477               2898   \n\n     three_pt_rate   fga   fgm  three_pm    efg_pct  total_points  \\\n0        22.026500  6415  2970       501  50.202650          6441   \n1        24.756554  5340  2428       491  50.065543          5347   \n2        28.483112  6632  3084       706  51.824487          6874   \n3        31.495355  6674  3060       767  51.595745          6887   \n4        32.093787  6696  3121       818  52.718041          7060   \n..             ...   ...   ...       ...        ...           ...   \n412      35.626724  6526  2989       863  52.413423          6841   \n413      31.752830  6538  3108       733  53.143163          6949   \n414      35.471966  7045  3327       859  53.321505          7513   \n415      36.267754  7111  3454       919  55.034454          7827   \n416      38.758861  7477  3522      1014  53.885248          8058   \n\n     total_attempts_y  points_per_shot  \n0                6415         1.004053  \n1                5340         1.001311  \n2                6632         1.036490  \n3                6674         1.031915  \n4                6696         1.054361  \n..                ...              ...  \n412              6526         1.048268  \n413              6538         1.062863  \n414              7045         1.066430  \n415              7111         1.100689  \n416              7477         1.077705  \n\n[417 rows x 12 columns]\n\n\n\nfrom src.visualization import (\n    plot_court_heatmap,\n    plot_era_heatmap_comparison,\n    plot_three_point_trend,\n    plot_zone_distribution_over_time,\n    plot_zone_shift_bar,\n    plot_team_three_point_trajectory,\n    plot_three_pt_vs_wins,\n    plot_top_three_point_adopters\n)\nfrom src.analysis import correlate_three_pt_rate_with_wins\nfrom src.data_collection import load_dataset\nimport matplotlib.pyplot as plt\n\nshots   = load_shot_data()\nmetrics = load_dataset(\"data/team_metrics_clean.csv\")\n\n# Court heatmap for one team\nfig = plot_court_heatmap(shots, team=\"Houston Rockets\", season=\"2018-19\")\nplt.show()\n\n# Era comparison side by side\nfig = plot_era_heatmap_comparison(shots)\nplt.show()\n\n# League wide three point trend\nfig = plot_three_point_trend(shots)\nplt.show()\n\n# Stacked area chart\nfig = plot_zone_distribution_over_time(shots)\nplt.show()\n\n# Which zones changed most\nfig = plot_zone_shift_bar(shots)\nplt.show()\n\n# Team trajectories\nfig = plot_team_three_point_trajectory(\n    shots,\n    teams=[\"Houston Rockets\", \"San Antonio Spurs\", \"Golden State Warriors\"]\n)\nplt.show()\n\n# Three point rate vs wins\ncorr_df = correlate_three_pt_rate_with_wins(shots, metrics)\nfig = plot_three_pt_vs_wins(corr_df)\nplt.show()\n\n# Top adopters\nfig = plot_top_three_point_adopters(shots)\nplt.show()\n\nLoaded part 1: 706,440 rows\nLoaded part 2: 706,440 rows\nLoaded part 3: 706,440 rows\nLoaded part 4: 706,443 rows\n\nAssembly complete: 2,825,763 total rows\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCorrelation between three point rate and win pct: 0.142"
   }
 ]

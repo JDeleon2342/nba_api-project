@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.27">
+<meta name="generator" content="quarto-1.8.26">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -72,10 +72,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-587c61ba64f3a5504c4d52d930310e48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-5b4ad623e5705c0698d39aec6f10cf02.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-e31584831b205ffbb2d98406f31c2a5b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -165,6 +165,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#running-the-analysis" id="toc-running-the-analysis" class="nav-link" data-scroll-target="#running-the-analysis">Running the Analysis</a></li>
   <li><a href="#viewing-visualizations" id="toc-viewing-visualizations" class="nav-link" data-scroll-target="#viewing-visualizations">Viewing Visualizations</a></li>
+  <li><a href="#complete-example-end-to-end-walkthrough" id="toc-complete-example-end-to-end-walkthrough" class="nav-link" data-scroll-target="#complete-example-end-to-end-walkthrough">Complete Example — End to End Walkthrough</a>
+  <ul class="collapse">
+  <li><a href="#expected-output" id="toc-expected-output" class="nav-link" data-scroll-target="#expected-output">Expected Output</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -202,10 +206,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Our project provides a Python API to access and analyze NBA shot data.</p>
 <section id="load-shot-data" class="level3">
 <h3 class="anchored" data-anchor-id="load-shot-data">Load Shot Data</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.data_collection <span class="im">import</span> load_dataset</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>shots <span class="op">=</span> load_dataset(<span class="st">"data/shot_data_clean.csv"</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(shots.head())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.data_collection <span class="im">import</span> load_shot_data, load_team_metrics</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>shots   <span class="op">=</span> load_shot_data()</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>metrics <span class="op">=</span> load_team_metrics()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="load-team-metrics" class="level3">
 <h3 class="anchored" data-anchor-id="load-team-metrics">Load Team Metrics</h3>
@@ -233,11 +236,128 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="viewing-visualizations" class="level2">
 <h2 class="anchored" data-anchor-id="viewing-visualizations">Viewing Visualizations</h2>
-<p>Use the Streamlit app to interactively explore the data:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">streamlit</span> run app.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>Use the Streamlit app to interactively explore the data. This is hosted on the link in the Home page but can also be run with this command:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run streamlit run app.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Then open your browser to <code>http://localhost:8501</code>.</p>
+</section>
+<section id="complete-example-end-to-end-walkthrough" class="level2">
+<h2 class="anchored" data-anchor-id="complete-example-end-to-end-walkthrough">Complete Example — End to End Walkthrough</h2>
+<p>Here is a full example that loads the data, runs analysis, and produces a visualization:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.data_collection <span class="im">import</span> load_shot_data, load_team_metrics</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.analysis <span class="im">import</span> (</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    three_point_rate_by_season,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    biggest_zone_shifts,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    rank_teams_by_three_point_adoption,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    correlate_three_pt_rate_with_wins</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.visualization <span class="im">import</span> (</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    plot_three_point_trend,</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    plot_zone_shift_bar,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    plot_top_three_point_adopters</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 1 — Load data</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>shots   <span class="op">=</span> load_shot_data()</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>metrics <span class="op">=</span> load_team_metrics()</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 2 — League wide three point trend</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>trend <span class="op">=</span> three_point_rate_by_season(shots)</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(trend)</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 3 — Which zones changed most</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>shifts <span class="op">=</span> biggest_zone_shifts(shots)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(shifts)</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 4 — Which teams adopted three point shooting most</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>rankings <span class="op">=</span> rank_teams_by_three_point_adoption(shots)</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(rankings.head(<span class="dv">10</span>))</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 5 — Does three point rate correlate with winning</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>corr_df <span class="op">=</span> correlate_three_pt_rate_with_wins(shots, metrics)</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Step 6 — Visualize</span></span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plot_three_point_trend(shots)</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plot_zone_shift_bar(shots)</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>fig <span class="op">=</span> plot_top_three_point_adopters(shots, top_n<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="expected-output" class="level3">
+<h3 class="anchored" data-anchor-id="expected-output">Expected Output</h3>
+<p>Running <code>three_point_rate_by_season(shots)</code> produces a DataFrame like:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>season</th>
+<th>total_attempts</th>
+<th>three_pt_attempts</th>
+<th>three_pt_rate</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2013-14</td>
+<td>198432</td>
+<td>40123</td>
+<td>20.2%</td>
+</tr>
+<tr class="even">
+<td>2016-17</td>
+<td>205341</td>
+<td>52847</td>
+<td>25.7%</td>
+</tr>
+<tr class="odd">
+<td>2019-20</td>
+<td>187234</td>
+<td>63421</td>
+<td>33.9%</td>
+</tr>
+<tr class="even">
+<td>2023-24</td>
+<td>210543</td>
+<td>82341</td>
+<td>39.1%</td>
+</tr>
+</tbody>
+</table>
+<p>Running <code>rank_teams_by_three_point_adoption(shots)</code> produces:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>team</th>
+<th>rate_first</th>
+<th>rate_last</th>
+<th>change</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Houston Rockets</td>
+<td>28.4%</td>
+<td>49.2%</td>
+<td>+20.8%</td>
+</tr>
+<tr class="even">
+<td>Milwaukee Bucks</td>
+<td>22.1%</td>
+<td>42.3%</td>
+<td>+20.2%</td>
+</tr>
+<tr class="odd">
+<td>Golden State Warriors</td>
+<td>29.3%</td>
+<td>47.1%</td>
+<td>+17.8%</td>
+</tr>
+</tbody>
+</table>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
