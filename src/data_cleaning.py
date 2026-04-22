@@ -17,6 +17,7 @@ def normalize_team_names(df):
         "Charlotte Bobcats":   "Charlotte Hornets",
         "New Jersey Nets":     "Brooklyn Nets",
         "New Orleans Hornets": "New Orleans Pelicans",
+        "LA Clippers" : "Los Angeles Clippers",
     }
     df = df.copy()
     df["team"] = df["team"].replace(name_map)

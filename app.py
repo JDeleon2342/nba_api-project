@@ -234,7 +234,7 @@ elif page == "🏆 Team Analysis":
     selected_teams = st.multiselect(
         "Select Teams",
         sorted(shots["team"].unique()),
-        default=["Houston Rockets", "San Antonio Spurs", "Golden State Warriors"]
+        default=["Boston Celtics", "San Antonio Spurs", "Golden State Warriors"]
     )
 
     if selected_teams:
