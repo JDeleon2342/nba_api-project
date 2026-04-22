@@ -8,7 +8,6 @@ This project provides a comprehensive analysis of NBA shot selection trends over
 
 **Explore the interactive dashboard:** [Streamlit App](https://nbaapi-project-iktjrcqcxerwx6xqe9atg9.streamlit.app/)
 
-### Feel free to remove this placeholder info
 
 ## Key Features
 
@@ -40,7 +39,7 @@ Exploratory Analysis (src.analysis)
     ↓
 Visualization & Insights (src.visualization)
     ↓
-Interactive Dashboard (streamlit app.py)
+Interactive Dashboard (streamlit app)
 ```
 
 ## Quick Start
@@ -57,7 +56,7 @@ Interactive Dashboard (streamlit app.py)
 
 3. **Explore interactively:**
    ```bash
-   streamlit run app.py
+   uv run streamlit run app.py
    ```
 
 4. **View the Jupyter notebook:**
@@ -71,8 +70,10 @@ Interactive Dashboard (streamlit app.py)
 - **Granularity:** Individual shot attempts
 
 ## Key Findings
-
-*Summary of insights coming soon. Run the analysis to generate findings.*
+- League-wide three-point attempt rate increased significantly from approximately 17% in 2010-11 to over 39% in 2023-24 — nearly doubling over the study period
+- Teams that most aggressively adopted three-point shooting include the Memphis Grizzlies, Houston Rockets, and Golden State Warriors
+- A positive correlation exists between three-point attempt rate and win percentage, suggesting teams that embraced modern shot selection gained a measurable competitive advantage
+- Mid-range shots declined sharply as the dominant offensive strategy shifted toward shots at the rim and above-the-break threes
 
 ## Files & Documentation
 

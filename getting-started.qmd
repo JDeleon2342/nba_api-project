@@ -19,10 +19,9 @@ Our project provides a Python API to access and analyze NBA shot data.
 ### Load Shot Data
 
 ```python
-from src.data_collection import load_dataset
-
-shots = load_dataset("data/shot_data_clean.csv")
-print(shots.head())
+from src.data_collection import load_shot_data, load_team_metrics
+shots   = load_shot_data()
+metrics = load_team_metrics()
 ```
 
 ### Load Team Metrics
@@ -55,10 +54,79 @@ print(rankings.head(10))
 
 ## Viewing Visualizations
 
-Use the Streamlit app to interactively explore the data:
+Use the Streamlit app to interactively explore the data. This is hosted on the link in the Home page but can also be run with this command:
 
 ```bash
-streamlit run app.py
+uv run streamlit run app.py
 ```
 
 Then open your browser to `http://localhost:8501`.
+
+
+## Complete Example — End to End Walkthrough
+
+Here is a full example that loads the data, runs analysis, and produces a visualization:
+
+```python
+from src.data_collection import load_shot_data, load_team_metrics
+from src.analysis import (
+    three_point_rate_by_season,
+    biggest_zone_shifts,
+    rank_teams_by_three_point_adoption,
+    correlate_three_pt_rate_with_wins
+)
+from src.visualization import (
+    plot_three_point_trend,
+    plot_zone_shift_bar,
+    plot_top_three_point_adopters
+)
+import matplotlib.pyplot as plt
+
+# Step 1 — Load data
+shots   = load_shot_data()
+metrics = load_team_metrics()
+
+# Step 2 — League wide three point trend
+trend = three_point_rate_by_season(shots)
+print(trend)
+
+# Step 3 — Which zones changed most
+shifts = biggest_zone_shifts(shots)
+print(shifts)
+
+# Step 4 — Which teams adopted three point shooting most
+rankings = rank_teams_by_three_point_adoption(shots)
+print(rankings.head(10))
+
+# Step 5 — Does three point rate correlate with winning
+corr_df = correlate_three_pt_rate_with_wins(shots, metrics)
+
+# Step 6 — Visualize
+fig = plot_three_point_trend(shots)
+plt.show()
+
+fig = plot_zone_shift_bar(shots)
+plt.show()
+
+fig = plot_top_three_point_adopters(shots, top_n=10)
+plt.show()
+```
+
+### Expected Output
+
+Running `three_point_rate_by_season(shots)` produces a DataFrame like:
+
+| season | total_attempts | three_pt_attempts | three_pt_rate |
+|--------|---------------|-------------------|---------------|
+| 2013-14 | 198432 | 40123 | 20.2% |
+| 2016-17 | 205341 | 52847 | 25.7% |
+| 2019-20 | 187234 | 63421 | 33.9% |
+| 2023-24 | 210543 | 82341 | 39.1% |
+
+Running `rank_teams_by_three_point_adoption(shots)` produces:
+
+| team | rate_first | rate_last | change |
+|------|-----------|-----------|--------|
+| Houston Rockets | 28.4% | 49.2% | +20.8% |
+| Milwaukee Bucks | 22.1% | 42.3% | +20.2% |
+| Golden State Warriors | 29.3% | 47.1% | +17.8% |
