@@ -4,14 +4,79 @@ title: "NBA Shot Selection Analysis"
 
 ## Overview
 
-This package provides tools to scrape and explore the NBA Shot Selection from the nba_api. This automates the collection, cleaning, analysis, and visualization of the change in NBA player shot selection from the 2010 to the end of the 2023 season.
+This project provides a comprehensive analysis of NBA shot selection trends over 15 years (2010–2024). We scrape shot-level data using the nba_api, clean and process it, and analyze how teams' offensive strategies have evolved, particularly their adoption of three-point shooting.
 
-Check out this streamlit app to explore the findings [here](https://nbaapi-project-iktjrcqcxerwx6xqe9atg9.streamlit.app/)
+**Explore the interactive dashboard:** [Streamlit App](https://nbaapi-project-iktjrcqcxerwx6xqe9atg9.streamlit.app/)
 
+### Feel free to remove this placeholder info
 
 ## Key Features
 
+- **Automated data collection** – Fetches shot-level data from NBA Stats API for all teams and seasons
+- **Data cleaning pipeline** – Standardizes zones, labels eras, handles edge cases
+- **Trend analysis** – Tracks league-wide three-point rate changes over time
+- **Team rankings** – Identifies early adopters and laggards in three-point shooting
+- **Statistical analysis** – Correlates three-point adoption with team success
+- **Interactive visualization** – Court heatmaps, time series plots, and comparative charts
+- **Reproducible workflow** – Full pipeline from raw data to insights
 
+## Research Questions
 
+1. How has the league-wide three-point rate changed from 2010 to 2024?
+2. Which teams have been early adopters of three-point shooting?
+3. Is there a correlation between three-point adoption and team wins?
+4. How have shot zones evolved in usage over the 15-year period?
 
 ## Main Pipeline
+
+```
+Raw NBA API Data
+    ↓
+Data Collection (src.data_collection)
+    ↓
+Data Cleaning (src.data_cleaning)
+    ↓
+Exploratory Analysis (src.analysis)
+    ↓
+Visualization & Insights (src.visualization)
+    ↓
+Interactive Dashboard (streamlit app.py)
+```
+
+## Quick Start
+
+1. **Install dependencies:**
+   ```bash
+   uv sync
+   ```
+
+2. **Run the analysis:**
+   ```bash
+   python main.py
+   ```
+
+3. **Explore interactively:**
+   ```bash
+   streamlit run app.py
+   ```
+
+4. **View the Jupyter notebook:**
+   Open `nba_api_eda.ipynb` for exploratory data analysis
+
+## Data Sources
+
+- **NBA Stats API** – Official NBA.com statistics
+- **Time period:** 2010–2011 through 2023–2024 seasons
+- **Teams:** All 30 NBA teams
+- **Granularity:** Individual shot attempts
+
+## Key Findings
+
+*Summary of insights coming soon. Run the analysis to generate findings.*
+
+## Files & Documentation
+
+- **[Getting Started](getting-started.html)** – How to use the API and run the project
+- **[Technical Report](technical.html)** – Methodology and pipeline details
+- **[API Documentation](documentation.html)** – Complete function reference
+- **[GitHub Repository](https://github.com/JDeleon2342/nba_api-project)** – Source code and data

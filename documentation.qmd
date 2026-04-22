@@ -4,16 +4,233 @@ title: "Documentation"
 
 ## Overview
 
+This document provides a comprehensive reference for the Python modules and functions available in this project.
 
+## Module: `src.data_collection`
 
-## Main Functions
+Functions for fetching and saving NBA shot data from the official NBA Stats API.
 
-### `data_pipeline()`
+### `get_shot_data(team_name, season)`
 
+Fetch shot chart data for a single team and season.
 
 **Parameters:**
+- `team_name` (str): Team name, e.g., `"Houston Rockets"` or `"Lakers"`
+- `season` (str): Season in format `YYYY-YY`, e.g., `"2018-19"`
 
 **Returns:**
+- DataFrame with shot-level data (coordinates, zones, outcomes)
 
 **Example:**
+```python
+from src.data_collection import get_shot_data
+df = get_shot_data("Houston Rockets", "2018-19")
+print(df.shape)
+```
+
+### `get_all_teams_shot_data(season, delay=0.6)`
+
+Fetch shot data for all 30 NBA teams in a given season.
+
+**Parameters:**
+- `season` (str): Season in format `YYYY-YY`
+- `delay` (float): Seconds to wait between API calls (default: 0.6)
+
+**Returns:**
+- Combined DataFrame for all teams
+
+**Example:**
+```python
+df = get_all_teams_shot_data("2018-19", delay=0.8)
+print(f"Loaded {len(df)} shots")
+```
+
+### `get_multiple_seasons_shot_data(seasons, delay=0.6)`
+
+Fetch shot data across multiple seasons for all teams.
+
+**Parameters:**
+- `seasons` (list): List of seasons, e.g., `["2015-16", "2016-17", "2017-18"]`
+- `delay` (float): Seconds between API calls
+
+**Returns:**
+- Combined DataFrame across all seasons
+
+**Example:**
+```python
+seasons = ["2015-16", "2016-17", "2017-18", "2018-19"]
+df = get_multiple_seasons_shot_data(seasons)
+```
+
+### `get_team_season_metrics(season_range)`
+
+Fetch team-level offensive metrics for multiple seasons.
+
+**Parameters:**
+- `season_range` (list): List of seasons
+
+**Returns:**
+- DataFrame with one row per team per season (wins, offensive rating, etc.)
+
+### `save_dataset(data, path)`
+
+Save a DataFrame to CSV.
+
+**Parameters:**
+- `data` (DataFrame): Data to save
+- `path` (str): File path, e.g., `"data/shot_data.csv"`
+
+**Note:** Parent directories are created automatically if they don't exist.
+
+### `load_dataset(path)`
+
+Load a CSV file into a DataFrame.
+
+**Parameters:**
+- `path` (str): File path
+
+**Returns:**
+- Loaded DataFrame
+
+## Module: `src.data_cleaning`
+
+Functions for cleaning and preprocessing raw API data.
+
+### `clean_shot_data(df)`
+
+Clean raw shot data: standardize columns, classify zones, label eras.
+
+**Parameters:**
+- `df` (DataFrame): Raw shot data from API
+
+**Returns:**
+- Cleaned DataFrame with standardized columns
+
+### `clean_team_metrics(df)`
+
+Clean raw team metrics data.
+
+**Parameters:**
+- `df` (DataFrame): Raw metrics data
+
+**Returns:**
+- Cleaned DataFrame
+
+## Module: `src.analysis`
+
+Functions for statistical and exploratory analysis.
+
+### `three_point_rate_by_season(shots)`
+
+Calculate league-wide three-point rate (3PA / total FGA) by season.
+
+**Parameters:**
+- `shots` (DataFrame): Cleaned shot data
+
+**Returns:**
+- Series with three-point rate indexed by season
+
+### `rank_teams_by_three_point_adoption(shots)`
+
+Rank teams by their overall three-point adoption rate.
+
+**Parameters:**
+- `shots` (DataFrame): Cleaned shot data
+
+**Returns:**
+- DataFrame with teams ranked by 3P rate (highest to lowest)
+
+### `biggest_zone_shifts(shots)`
+
+Identify which shot zones have changed most in usage over time.
+
+**Parameters:**
+- `shots` (DataFrame): Cleaned shot data
+
+**Returns:**
+- DataFrame showing zone usage shifts
+
+### `correlate_three_pt_rate_with_wins(shots, metrics)`
+
+Correlate team three-point rate with win percentage.
+
+**Parameters:**
+- `shots` (DataFrame): Cleaned shot data
+- `metrics` (DataFrame): Cleaned team metrics
+
+**Returns:**
+- DataFrame with correlation analysis results
+
+## Module: `src.visualization`
+
+Functions for creating interactive and static visualizations.
+
+### `plot_court_heatmap(shots, team, season)`
+
+Generate a court heatmap for a specific team and season.
+
+**Parameters:**
+- `shots` (DataFrame): Shot data
+- `team` (str): Team name
+- `season` (str): Season
+
+**Returns:**
+- Matplotlib figure
+
+### `plot_three_point_trend(shots)`
+
+Plot league-wide three-point trend over time.
+
+**Parameters:**
+- `shots` (DataFrame): Shot data
+
+**Returns:**
+- Matplotlib figure
+
+### `plot_zone_distribution_over_time(shots)`
+
+Stacked area chart showing zone usage changes over time.
+
+**Parameters:**
+- `shots` (DataFrame): Shot data
+
+**Returns:**
+- Matplotlib figure
+
+### `plot_three_pt_vs_wins(corr_df)`
+
+Scatter plot correlating three-point rate with win percentage.
+
+**Parameters:**
+- `corr_df` (DataFrame): Correlation data from `correlate_three_pt_rate_with_wins()`
+
+**Returns:**
+- Matplotlib figure
+
+## Data Formats
+
+### Shot Data Columns
+
+```
+TEAM_NAME          string
+SEASON_1           string (YYYY-YY format)
+SHOT_ZONE_BASIC    string (e.g., "3PT Line", "Paint", "Mid-Range")
+SHOT_DISTANCE      float (feet)
+LOC_X              float (court coordinates)
+LOC_Y              float (court coordinates)
+SHOT_MADE_FLAG     int (0 or 1)
+SHOT_TYPE          string ("2PT Field Goal" or "3PT Field Goal")
+ACTION_TYPE        string (e.g., "Jump Shot", "Layup")
+```
+
+### Metrics Data Columns
+
+```
+TEAM_NAME          string
+season             string (YYYY-YY format)
+WINS               int
+OFF_RATING         float (points per 100 possessions)
+EFG_PCT            float (effective FG %)
+PACE               float (possessions per game)
+```
 

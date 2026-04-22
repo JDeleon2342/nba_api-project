@@ -4,20 +4,98 @@ title: "Technical Report"
 
 ## Purpose
 
+This technical report documents the methodology and architecture of the NBA Shot Selection Analysis project. It provides an overview of how we collect, clean, and analyze 15 years of NBA shot data to understand trends in three-point shooting adoption.
+
 ## 1. Data Extraction
+
+We use the [NBA Stats API](https://github.com/swar/nba_api) to collect official NBA statistics. The API provides shot-level data from the official NBA.com database.
+
+**Key endpoints used:**
+- `shotchartdetail.ShotChartDetail()` – Individual shot attempts with coordinates and outcome
+- `leaguedashteamstats.LeagueDashTeamStats()` – Team-level offensive metrics
+
+**Data collection parameters:**
+- Time period: 2010–2011 through 2023–2024 (14 seasons)
+- Teams: All 30 NBA teams
+- Season type: Regular season only
+- Context measure: Field goal attempts (FGA)
 
 ## 2. Data Structure
 
-## 3. Cleaning And Standardization
+### Shot-Level Data
 
+Each shot record includes:
+- `TEAM_NAME` – NBA team name
+- `SEASON_1` – Season year
+- `SHOT_ZONE_BASIC` – Basic zone classification (e.g., "3PT Line", "Paint")
+- `SHOT_ZONE_AREA` – Detailed zone area
+- `SHOT_DISTANCE` – Distance in feet
+- `LOC_X`, `LOC_Y` – Court coordinates
+- `SHOT_ATTEMPTED_FLAG` – Whether the shot was attempted
+- `SHOT_MADE_FLAG` – Whether the shot was made (1) or missed (0)
+- `SHOT_TYPE` – "2PT Field Goal" or "3PT Field Goal"
+- `ACTION_TYPE` – Type of action (e.g., layup, jump shot)
 
-## 4. Persisting The Output
+### Team Metrics Data
 
+Team-season level aggregations:
+- `TEAM_NAME` – Team name
+- `season` – Season identifier
+- `WINS` – Regular season wins
+- `OFF_RATING` – Offensive rating (points per 100 possessions)
+- `EFG_PCT` – Effective field goal percentage
+- `PACE` – Possessions per game
+
+## 3. Cleaning and Standardization
+
+Raw API data undergoes several cleaning steps:
+
+1. **Column standardization** – Select and rename relevant columns
+2. **Data type conversion** – Ensure numeric columns are properly typed
+3. **Zone classification** – Standardize shot zone labels
+4. **Era labeling** – Classify shots into "early" (2010-2014), "mid" (2015-2018), and "modern" (2019-2024) eras
+5. **Outlier handling** – Remove incomplete or suspicious records
+6. **Team name matching** – Ensure consistency across datasets
+
+## 4. Persisting the Output
+
+Cleaned datasets are saved as CSV files for downstream analysis:
+
+```python
+save_dataset(cleaned_shots, "data/shot_data_clean.csv")
+save_dataset(cleaned_metrics, "data/team_metrics_clean.csv")
+```
+
+Both local and CI/CD pipelines ensure data is always in sync.
 
 ## 5. Exploration Workflow
 
+The analysis pipeline consists of:
+
+1. **Data loading** – Read cleaned CSV files
+2. **Aggregation** – Group shots by team, season, and zone
+3. **Metric calculation** – Compute three-point rates, adoption rankings, correlations
+4. **Visualization** – Generate court heatmaps, trend lines, and comparative charts
+5. **Export** – Save results for reporting
+
+All code is modular and reproducible using Python and standard data science libraries (pandas, matplotlib, plotly).
 
 ## 6. Reproducibility Notes
 
+- **Python version:** 3.11+
+- **Key dependencies:** `nba_api`, `pandas`, `matplotlib`, `plotly`, `streamlit`, `quarto`
+- **Data sources:** Official NBA Stats API (no paid licenses required)
+- **Runtime:** Data collection takes ~5-10 minutes for full 14-season history depending on API rate limits
+
+To reproduce:
+```bash
+uv sync
+python src/data_collection.py
+python src/data_cleaning.py
+python src/analysis.py
+streamlit run app.py
+```
 
 ## 7. Summary
+
+This project demonstrates a complete data pipeline: from external API collection, through cleaning and standardization, to exploratory analysis and interactive visualization. The methodology is transparent, code is version-controlled, and results are reproducible on any machine with Python and internet access.

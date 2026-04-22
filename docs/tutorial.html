@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Technical Report – NBA Shot Selection Analysis Over 15 Years</title>
+<title>Tutorial – NBA Shot Selection Analysis Over 15 Years</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,41 +19,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-html { -webkit-text-size-adjust: 100%; }
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -138,7 +103,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">Documentation</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./technical.html" aria-current="page"> 
+    <a class="nav-link" href="./technical.html"> 
 <span class="menu-text">Technical Report</span></a>
   </li>  
 </ul>
@@ -157,18 +122,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#purpose" id="toc-purpose" class="nav-link active" data-scroll-target="#purpose">Purpose</a></li>
-  <li><a href="#data-extraction" id="toc-data-extraction" class="nav-link" data-scroll-target="#data-extraction">1. Data Extraction</a></li>
-  <li><a href="#data-structure" id="toc-data-structure" class="nav-link" data-scroll-target="#data-structure">2. Data Structure</a>
-  <ul class="collapse">
-  <li><a href="#shot-level-data" id="toc-shot-level-data" class="nav-link" data-scroll-target="#shot-level-data">Shot-Level Data</a></li>
-  <li><a href="#team-metrics-data" id="toc-team-metrics-data" class="nav-link" data-scroll-target="#team-metrics-data">Team Metrics Data</a></li>
-  </ul></li>
-  <li><a href="#cleaning-and-standardization" id="toc-cleaning-and-standardization" class="nav-link" data-scroll-target="#cleaning-and-standardization">3. Cleaning and Standardization</a></li>
-  <li><a href="#persisting-the-output" id="toc-persisting-the-output" class="nav-link" data-scroll-target="#persisting-the-output">4. Persisting the Output</a></li>
-  <li><a href="#exploration-workflow" id="toc-exploration-workflow" class="nav-link" data-scroll-target="#exploration-workflow">5. Exploration Workflow</a></li>
-  <li><a href="#reproducibility-notes" id="toc-reproducibility-notes" class="nav-link" data-scroll-target="#reproducibility-notes">6. Reproducibility Notes</a></li>
-  <li><a href="#summary" id="toc-summary" class="nav-link" data-scroll-target="#summary">7. Summary</a></li>
+  <li><a href="#installation" id="toc-installation" class="nav-link active" data-scroll-target="#installation">Installation</a></li>
+  <li><a href="#quick-start" id="toc-quick-start" class="nav-link" data-scroll-target="#quick-start">Quick Start</a></li>
+  <li><a href="#common-patterns" id="toc-common-patterns" class="nav-link" data-scroll-target="#common-patterns">Common Patterns</a></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next Steps</a></li>
+  <li><a href="#troubleshooting" id="toc-troubleshooting" class="nav-link" data-scroll-target="#troubleshooting">Troubleshooting</a></li>
   </ul>
 </nav>
     </div>
@@ -177,7 +135,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Technical Report</h1>
+<h1 class="title">Tutorial</h1>
 </div>
 
 
@@ -194,76 +152,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="purpose" class="level2">
-<h2 class="anchored" data-anchor-id="purpose">Purpose</h2>
-<p>This technical report documents the methodology and architecture of the NBA Shot Selection Analysis project. It provides an overview of how we collect, clean, and analyze 15 years of NBA shot data to understand trends in three-point shooting adoption.</p>
+<section id="installation" class="level2">
+<h2 class="anchored" data-anchor-id="installation">Installation</h2>
 </section>
-<section id="data-extraction" class="level2">
-<h2 class="anchored" data-anchor-id="data-extraction">1. Data Extraction</h2>
-<p>We use the <a href="https://github.com/swar/nba_api">NBA Stats API</a> to collect official NBA statistics. The API provides shot-level data from the official NBA.com database.</p>
-<p><strong>Key endpoints used:</strong> - <code>shotchartdetail.ShotChartDetail()</code> – Individual shot attempts with coordinates and outcome - <code>leaguedashteamstats.LeagueDashTeamStats()</code> – Team-level offensive metrics</p>
-<p><strong>Data collection parameters:</strong> - Time period: 2010–2011 through 2023–2024 (14 seasons) - Teams: All 30 NBA teams - Season type: Regular season only - Context measure: Field goal attempts (FGA)</p>
+<section id="quick-start" class="level2">
+<h2 class="anchored" data-anchor-id="quick-start">Quick Start</h2>
 </section>
-<section id="data-structure" class="level2">
-<h2 class="anchored" data-anchor-id="data-structure">2. Data Structure</h2>
-<section id="shot-level-data" class="level3">
-<h3 class="anchored" data-anchor-id="shot-level-data">Shot-Level Data</h3>
-<p>Each shot record includes: - <code>TEAM_NAME</code> – NBA team name - <code>SEASON_1</code> – Season year - <code>SHOT_ZONE_BASIC</code> – Basic zone classification (e.g., “3PT Line”, “Paint”) - <code>SHOT_ZONE_AREA</code> – Detailed zone area - <code>SHOT_DISTANCE</code> – Distance in feet - <code>LOC_X</code>, <code>LOC_Y</code> – Court coordinates - <code>SHOT_ATTEMPTED_FLAG</code> – Whether the shot was attempted - <code>SHOT_MADE_FLAG</code> – Whether the shot was made (1) or missed (0) - <code>SHOT_TYPE</code> – “2PT Field Goal” or “3PT Field Goal” - <code>ACTION_TYPE</code> – Type of action (e.g., layup, jump shot)</p>
+<section id="common-patterns" class="level2">
+<h2 class="anchored" data-anchor-id="common-patterns">Common Patterns</h2>
 </section>
-<section id="team-metrics-data" class="level3">
-<h3 class="anchored" data-anchor-id="team-metrics-data">Team Metrics Data</h3>
-<p>Team-season level aggregations: - <code>TEAM_NAME</code> – Team name - <code>season</code> – Season identifier - <code>WINS</code> – Regular season wins - <code>OFF_RATING</code> – Offensive rating (points per 100 possessions) - <code>EFG_PCT</code> – Effective field goal percentage - <code>PACE</code> – Possessions per game</p>
+<section id="next-steps" class="level2">
+<h2 class="anchored" data-anchor-id="next-steps">Next Steps</h2>
 </section>
-</section>
-<section id="cleaning-and-standardization" class="level2">
-<h2 class="anchored" data-anchor-id="cleaning-and-standardization">3. Cleaning and Standardization</h2>
-<p>Raw API data undergoes several cleaning steps:</p>
-<ol type="1">
-<li><strong>Column standardization</strong> – Select and rename relevant columns</li>
-<li><strong>Data type conversion</strong> – Ensure numeric columns are properly typed</li>
-<li><strong>Zone classification</strong> – Standardize shot zone labels</li>
-<li><strong>Era labeling</strong> – Classify shots into “early” (2010-2014), “mid” (2015-2018), and “modern” (2019-2024) eras</li>
-<li><strong>Outlier handling</strong> – Remove incomplete or suspicious records</li>
-<li><strong>Team name matching</strong> – Ensure consistency across datasets</li>
-</ol>
-</section>
-<section id="persisting-the-output" class="level2">
-<h2 class="anchored" data-anchor-id="persisting-the-output">4. Persisting the Output</h2>
-<p>Cleaned datasets are saved as CSV files for downstream analysis:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>save_dataset(cleaned_shots, <span class="st">"data/shot_data_clean.csv"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>save_dataset(cleaned_metrics, <span class="st">"data/team_metrics_clean.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Both local and CI/CD pipelines ensure data is always in sync.</p>
-</section>
-<section id="exploration-workflow" class="level2">
-<h2 class="anchored" data-anchor-id="exploration-workflow">5. Exploration Workflow</h2>
-<p>The analysis pipeline consists of:</p>
-<ol type="1">
-<li><strong>Data loading</strong> – Read cleaned CSV files</li>
-<li><strong>Aggregation</strong> – Group shots by team, season, and zone</li>
-<li><strong>Metric calculation</strong> – Compute three-point rates, adoption rankings, correlations</li>
-<li><strong>Visualization</strong> – Generate court heatmaps, trend lines, and comparative charts</li>
-<li><strong>Export</strong> – Save results for reporting</li>
-</ol>
-<p>All code is modular and reproducible using Python and standard data science libraries (pandas, matplotlib, plotly).</p>
-</section>
-<section id="reproducibility-notes" class="level2">
-<h2 class="anchored" data-anchor-id="reproducibility-notes">6. Reproducibility Notes</h2>
-<ul>
-<li><strong>Python version:</strong> 3.11+</li>
-<li><strong>Key dependencies:</strong> <code>nba_api</code>, <code>pandas</code>, <code>matplotlib</code>, <code>plotly</code>, <code>streamlit</code>, <code>quarto</code></li>
-<li><strong>Data sources:</strong> Official NBA Stats API (no paid licenses required)</li>
-<li><strong>Runtime:</strong> Data collection takes ~5-10 minutes for full 14-season history depending on API rate limits</li>
-</ul>
-<p>To reproduce:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> sync</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> src/data_collection.py</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> src/data_cleaning.py</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">python</span> src/analysis.py</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">streamlit</span> run app.py</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="summary" class="level2">
-<h2 class="anchored" data-anchor-id="summary">7. Summary</h2>
-<p>This project demonstrates a complete data pipeline: from external API collection, through cleaning and standardization, to exploratory analysis and interactive visualization. The methodology is transparent, code is version-controlled, and results are reproducible on any machine with Python and internet access.</p>
+<section id="troubleshooting" class="level2">
+<h2 class="anchored" data-anchor-id="troubleshooting">Troubleshooting</h2>
 
 
 </section>

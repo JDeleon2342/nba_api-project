@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>documentation – NBA Shot Selection Analysis Over 15 Years</title>
+<title>Documentation – NBA Shot Selection Analysis Over 15 Years</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,6 +19,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -117,17 +152,222 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
+  <li><a href="#module-src.data_collection" id="toc-module-src.data_collection" class="nav-link" data-scroll-target="#module-src.data_collection">Module: <code>src.data_collection</code></a>
+  <ul class="collapse">
+  <li><a href="#get_shot_datateam_name-season" id="toc-get_shot_datateam_name-season" class="nav-link" data-scroll-target="#get_shot_datateam_name-season"><code>get_shot_data(team_name, season)</code></a></li>
+  <li><a href="#get_all_teams_shot_dataseason-delay0.6" id="toc-get_all_teams_shot_dataseason-delay0.6" class="nav-link" data-scroll-target="#get_all_teams_shot_dataseason-delay0.6"><code>get_all_teams_shot_data(season, delay=0.6)</code></a></li>
+  <li><a href="#get_multiple_seasons_shot_dataseasons-delay0.6" id="toc-get_multiple_seasons_shot_dataseasons-delay0.6" class="nav-link" data-scroll-target="#get_multiple_seasons_shot_dataseasons-delay0.6"><code>get_multiple_seasons_shot_data(seasons, delay=0.6)</code></a></li>
+  <li><a href="#get_team_season_metricsseason_range" id="toc-get_team_season_metricsseason_range" class="nav-link" data-scroll-target="#get_team_season_metricsseason_range"><code>get_team_season_metrics(season_range)</code></a></li>
+  <li><a href="#save_datasetdata-path" id="toc-save_datasetdata-path" class="nav-link" data-scroll-target="#save_datasetdata-path"><code>save_dataset(data, path)</code></a></li>
+  <li><a href="#load_datasetpath" id="toc-load_datasetpath" class="nav-link" data-scroll-target="#load_datasetpath"><code>load_dataset(path)</code></a></li>
+  </ul></li>
+  <li><a href="#module-src.data_cleaning" id="toc-module-src.data_cleaning" class="nav-link" data-scroll-target="#module-src.data_cleaning">Module: <code>src.data_cleaning</code></a>
+  <ul class="collapse">
+  <li><a href="#clean_shot_datadf" id="toc-clean_shot_datadf" class="nav-link" data-scroll-target="#clean_shot_datadf"><code>clean_shot_data(df)</code></a></li>
+  <li><a href="#clean_team_metricsdf" id="toc-clean_team_metricsdf" class="nav-link" data-scroll-target="#clean_team_metricsdf"><code>clean_team_metrics(df)</code></a></li>
+  </ul></li>
+  <li><a href="#module-src.analysis" id="toc-module-src.analysis" class="nav-link" data-scroll-target="#module-src.analysis">Module: <code>src.analysis</code></a>
+  <ul class="collapse">
+  <li><a href="#three_point_rate_by_seasonshots" id="toc-three_point_rate_by_seasonshots" class="nav-link" data-scroll-target="#three_point_rate_by_seasonshots"><code>three_point_rate_by_season(shots)</code></a></li>
+  <li><a href="#rank_teams_by_three_point_adoptionshots" id="toc-rank_teams_by_three_point_adoptionshots" class="nav-link" data-scroll-target="#rank_teams_by_three_point_adoptionshots"><code>rank_teams_by_three_point_adoption(shots)</code></a></li>
+  <li><a href="#biggest_zone_shiftsshots" id="toc-biggest_zone_shiftsshots" class="nav-link" data-scroll-target="#biggest_zone_shiftsshots"><code>biggest_zone_shifts(shots)</code></a></li>
+  <li><a href="#correlate_three_pt_rate_with_winsshots-metrics" id="toc-correlate_three_pt_rate_with_winsshots-metrics" class="nav-link" data-scroll-target="#correlate_three_pt_rate_with_winsshots-metrics"><code>correlate_three_pt_rate_with_wins(shots, metrics)</code></a></li>
+  </ul></li>
+  <li><a href="#module-src.visualization" id="toc-module-src.visualization" class="nav-link" data-scroll-target="#module-src.visualization">Module: <code>src.visualization</code></a>
+  <ul class="collapse">
+  <li><a href="#plot_court_heatmapshots-team-season" id="toc-plot_court_heatmapshots-team-season" class="nav-link" data-scroll-target="#plot_court_heatmapshots-team-season"><code>plot_court_heatmap(shots, team, season)</code></a></li>
+  <li><a href="#plot_three_point_trendshots" id="toc-plot_three_point_trendshots" class="nav-link" data-scroll-target="#plot_three_point_trendshots"><code>plot_three_point_trend(shots)</code></a></li>
+  <li><a href="#plot_zone_distribution_over_timeshots" id="toc-plot_zone_distribution_over_timeshots" class="nav-link" data-scroll-target="#plot_zone_distribution_over_timeshots"><code>plot_zone_distribution_over_time(shots)</code></a></li>
+  <li><a href="#plot_three_pt_vs_winscorr_df" id="toc-plot_three_pt_vs_winscorr_df" class="nav-link" data-scroll-target="#plot_three_pt_vs_winscorr_df"><code>plot_three_pt_vs_wins(corr_df)</code></a></li>
+  </ul></li>
+  <li><a href="#data-formats" id="toc-data-formats" class="nav-link" data-scroll-target="#data-formats">Data Formats</a>
+  <ul class="collapse">
+  <li><a href="#shot-data-columns" id="toc-shot-data-columns" class="nav-link" data-scroll-target="#shot-data-columns">Shot Data Columns</a></li>
+  <li><a href="#metrics-data-columns" id="toc-metrics-data-columns" class="nav-link" data-scroll-target="#metrics-data-columns">Metrics Data Columns</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Documentation</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
 
 
+</header>
 
+
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<p>This document provides a comprehensive reference for the Python modules and functions available in this project.</p>
+</section>
+<section id="module-src.data_collection" class="level2">
+<h2 class="anchored" data-anchor-id="module-src.data_collection">Module: <code>src.data_collection</code></h2>
+<p>Functions for fetching and saving NBA shot data from the official NBA Stats API.</p>
+<section id="get_shot_datateam_name-season" class="level3">
+<h3 class="anchored" data-anchor-id="get_shot_datateam_name-season"><code>get_shot_data(team_name, season)</code></h3>
+<p>Fetch shot chart data for a single team and season.</p>
+<p><strong>Parameters:</strong> - <code>team_name</code> (str): Team name, e.g., <code>"Houston Rockets"</code> or <code>"Lakers"</code> - <code>season</code> (str): Season in format <code>YYYY-YY</code>, e.g., <code>"2018-19"</code></p>
+<p><strong>Returns:</strong> - DataFrame with shot-level data (coordinates, zones, outcomes)</p>
+<p><strong>Example:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> src.data_collection <span class="im">import</span> get_shot_data</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> get_shot_data(<span class="st">"Houston Rockets"</span>, <span class="st">"2018-19"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.shape)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="get_all_teams_shot_dataseason-delay0.6" class="level3">
+<h3 class="anchored" data-anchor-id="get_all_teams_shot_dataseason-delay0.6"><code>get_all_teams_shot_data(season, delay=0.6)</code></h3>
+<p>Fetch shot data for all 30 NBA teams in a given season.</p>
+<p><strong>Parameters:</strong> - <code>season</code> (str): Season in format <code>YYYY-YY</code> - <code>delay</code> (float): Seconds to wait between API calls (default: 0.6)</p>
+<p><strong>Returns:</strong> - Combined DataFrame for all teams</p>
+<p><strong>Example:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> get_all_teams_shot_data(<span class="st">"2018-19"</span>, delay<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Loaded </span><span class="sc">{</span><span class="bu">len</span>(df)<span class="sc">}</span><span class="ss"> shots"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="get_multiple_seasons_shot_dataseasons-delay0.6" class="level3">
+<h3 class="anchored" data-anchor-id="get_multiple_seasons_shot_dataseasons-delay0.6"><code>get_multiple_seasons_shot_data(seasons, delay=0.6)</code></h3>
+<p>Fetch shot data across multiple seasons for all teams.</p>
+<p><strong>Parameters:</strong> - <code>seasons</code> (list): List of seasons, e.g., <code>["2015-16", "2016-17", "2017-18"]</code> - <code>delay</code> (float): Seconds between API calls</p>
+<p><strong>Returns:</strong> - Combined DataFrame across all seasons</p>
+<p><strong>Example:</strong></p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>seasons <span class="op">=</span> [<span class="st">"2015-16"</span>, <span class="st">"2016-17"</span>, <span class="st">"2017-18"</span>, <span class="st">"2018-19"</span>]</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> get_multiple_seasons_shot_data(seasons)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="get_team_season_metricsseason_range" class="level3">
+<h3 class="anchored" data-anchor-id="get_team_season_metricsseason_range"><code>get_team_season_metrics(season_range)</code></h3>
+<p>Fetch team-level offensive metrics for multiple seasons.</p>
+<p><strong>Parameters:</strong> - <code>season_range</code> (list): List of seasons</p>
+<p><strong>Returns:</strong> - DataFrame with one row per team per season (wins, offensive rating, etc.)</p>
+</section>
+<section id="save_datasetdata-path" class="level3">
+<h3 class="anchored" data-anchor-id="save_datasetdata-path"><code>save_dataset(data, path)</code></h3>
+<p>Save a DataFrame to CSV.</p>
+<p><strong>Parameters:</strong> - <code>data</code> (DataFrame): Data to save - <code>path</code> (str): File path, e.g., <code>"data/shot_data.csv"</code></p>
+<p><strong>Note:</strong> Parent directories are created automatically if they don’t exist.</p>
+</section>
+<section id="load_datasetpath" class="level3">
+<h3 class="anchored" data-anchor-id="load_datasetpath"><code>load_dataset(path)</code></h3>
+<p>Load a CSV file into a DataFrame.</p>
+<p><strong>Parameters:</strong> - <code>path</code> (str): File path</p>
+<p><strong>Returns:</strong> - Loaded DataFrame</p>
+</section>
+</section>
+<section id="module-src.data_cleaning" class="level2">
+<h2 class="anchored" data-anchor-id="module-src.data_cleaning">Module: <code>src.data_cleaning</code></h2>
+<p>Functions for cleaning and preprocessing raw API data.</p>
+<section id="clean_shot_datadf" class="level3">
+<h3 class="anchored" data-anchor-id="clean_shot_datadf"><code>clean_shot_data(df)</code></h3>
+<p>Clean raw shot data: standardize columns, classify zones, label eras.</p>
+<p><strong>Parameters:</strong> - <code>df</code> (DataFrame): Raw shot data from API</p>
+<p><strong>Returns:</strong> - Cleaned DataFrame with standardized columns</p>
+</section>
+<section id="clean_team_metricsdf" class="level3">
+<h3 class="anchored" data-anchor-id="clean_team_metricsdf"><code>clean_team_metrics(df)</code></h3>
+<p>Clean raw team metrics data.</p>
+<p><strong>Parameters:</strong> - <code>df</code> (DataFrame): Raw metrics data</p>
+<p><strong>Returns:</strong> - Cleaned DataFrame</p>
+</section>
+</section>
+<section id="module-src.analysis" class="level2">
+<h2 class="anchored" data-anchor-id="module-src.analysis">Module: <code>src.analysis</code></h2>
+<p>Functions for statistical and exploratory analysis.</p>
+<section id="three_point_rate_by_seasonshots" class="level3">
+<h3 class="anchored" data-anchor-id="three_point_rate_by_seasonshots"><code>three_point_rate_by_season(shots)</code></h3>
+<p>Calculate league-wide three-point rate (3PA / total FGA) by season.</p>
+<p><strong>Parameters:</strong> - <code>shots</code> (DataFrame): Cleaned shot data</p>
+<p><strong>Returns:</strong> - Series with three-point rate indexed by season</p>
+</section>
+<section id="rank_teams_by_three_point_adoptionshots" class="level3">
+<h3 class="anchored" data-anchor-id="rank_teams_by_three_point_adoptionshots"><code>rank_teams_by_three_point_adoption(shots)</code></h3>
+<p>Rank teams by their overall three-point adoption rate.</p>
+<p><strong>Parameters:</strong> - <code>shots</code> (DataFrame): Cleaned shot data</p>
+<p><strong>Returns:</strong> - DataFrame with teams ranked by 3P rate (highest to lowest)</p>
+</section>
+<section id="biggest_zone_shiftsshots" class="level3">
+<h3 class="anchored" data-anchor-id="biggest_zone_shiftsshots"><code>biggest_zone_shifts(shots)</code></h3>
+<p>Identify which shot zones have changed most in usage over time.</p>
+<p><strong>Parameters:</strong> - <code>shots</code> (DataFrame): Cleaned shot data</p>
+<p><strong>Returns:</strong> - DataFrame showing zone usage shifts</p>
+</section>
+<section id="correlate_three_pt_rate_with_winsshots-metrics" class="level3">
+<h3 class="anchored" data-anchor-id="correlate_three_pt_rate_with_winsshots-metrics"><code>correlate_three_pt_rate_with_wins(shots, metrics)</code></h3>
+<p>Correlate team three-point rate with win percentage.</p>
+<p><strong>Parameters:</strong> - <code>shots</code> (DataFrame): Cleaned shot data - <code>metrics</code> (DataFrame): Cleaned team metrics</p>
+<p><strong>Returns:</strong> - DataFrame with correlation analysis results</p>
+</section>
+</section>
+<section id="module-src.visualization" class="level2">
+<h2 class="anchored" data-anchor-id="module-src.visualization">Module: <code>src.visualization</code></h2>
+<p>Functions for creating interactive and static visualizations.</p>
+<section id="plot_court_heatmapshots-team-season" class="level3">
+<h3 class="anchored" data-anchor-id="plot_court_heatmapshots-team-season"><code>plot_court_heatmap(shots, team, season)</code></h3>
+<p>Generate a court heatmap for a specific team and season.</p>
+<p><strong>Parameters:</strong> - <code>shots</code> (DataFrame): Shot data - <code>team</code> (str): Team name - <code>season</code> (str): Season</p>
+<p><strong>Returns:</strong> - Matplotlib figure</p>
+</section>
+<section id="plot_three_point_trendshots" class="level3">
+<h3 class="anchored" data-anchor-id="plot_three_point_trendshots"><code>plot_three_point_trend(shots)</code></h3>
+<p>Plot league-wide three-point trend over time.</p>
+<p><strong>Parameters:</strong> - <code>shots</code> (DataFrame): Shot data</p>
+<p><strong>Returns:</strong> - Matplotlib figure</p>
+</section>
+<section id="plot_zone_distribution_over_timeshots" class="level3">
+<h3 class="anchored" data-anchor-id="plot_zone_distribution_over_timeshots"><code>plot_zone_distribution_over_time(shots)</code></h3>
+<p>Stacked area chart showing zone usage changes over time.</p>
+<p><strong>Parameters:</strong> - <code>shots</code> (DataFrame): Shot data</p>
+<p><strong>Returns:</strong> - Matplotlib figure</p>
+</section>
+<section id="plot_three_pt_vs_winscorr_df" class="level3">
+<h3 class="anchored" data-anchor-id="plot_three_pt_vs_winscorr_df"><code>plot_three_pt_vs_wins(corr_df)</code></h3>
+<p>Scatter plot correlating three-point rate with win percentage.</p>
+<p><strong>Parameters:</strong> - <code>corr_df</code> (DataFrame): Correlation data from <code>correlate_three_pt_rate_with_wins()</code></p>
+<p><strong>Returns:</strong> - Matplotlib figure</p>
+</section>
+</section>
+<section id="data-formats" class="level2">
+<h2 class="anchored" data-anchor-id="data-formats">Data Formats</h2>
+<section id="shot-data-columns" class="level3">
+<h3 class="anchored" data-anchor-id="shot-data-columns">Shot Data Columns</h3>
+<pre><code>TEAM_NAME          string
+SEASON_1           string (YYYY-YY format)
+SHOT_ZONE_BASIC    string (e.g., "3PT Line", "Paint", "Mid-Range")
+SHOT_DISTANCE      float (feet)
+LOC_X              float (court coordinates)
+LOC_Y              float (court coordinates)
+SHOT_MADE_FLAG     int (0 or 1)
+SHOT_TYPE          string ("2PT Field Goal" or "3PT Field Goal")
+ACTION_TYPE        string (e.g., "Jump Shot", "Layup")</code></pre>
+</section>
+<section id="metrics-data-columns" class="level3">
+<h3 class="anchored" data-anchor-id="metrics-data-columns">Metrics Data Columns</h3>
+<pre><code>TEAM_NAME          string
+season             string (YYYY-YY format)
+WINS               int
+OFF_RATING         float (points per 100 possessions)
+EFG_PCT            float (effective FG %)
+PACE               float (possessions per game)</code></pre>
+
+
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
