@@ -6,13 +6,13 @@ website:
   title: "NBA Shot Selection Analysis Over 15 Years"
   navbar:
     left:
-      - href: 
+      - href: index.qmd
         text: Home
-      - href: 
+      - href: tutorial.qmd
         text: Getting Started
-      - href: 
+      - href: documentation.qmd
         text: Documentation
-      - href: 
+      - href: technical.qmd
         text: Technical Report
 
 format:

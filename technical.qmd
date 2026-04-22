@@ -1,0 +1,23 @@
+---
+title: "Technical Report'
+---
+
+## Purpose
+
+## 1. Data Extraction
+
+## 2. Data Structure
+
+## 3. Cleaning And Standardization
+
+
+## 4. Persisting The Output
+
+
+## 5. Exploration Workflow
+
+
+## 6. Reproducibility Notes
+
+
+## 7. Summary
