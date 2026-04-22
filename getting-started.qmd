@@ -1,0 +1,64 @@
+---
+title: "Getting Started"
+---
+
+## Installation
+
+Clone the repository and install dependencies:
+
+```bash
+git clone https://github.com/JDeleon2342/nba_api-project.git
+cd nba_api-project
+uv sync
+```
+
+## Using the API
+
+Our project provides a Python API to access and analyze NBA shot data.
+
+### Load Shot Data
+
+```python
+from src.data_collection import load_dataset
+
+shots = load_dataset("data/shot_data_clean.csv")
+print(shots.head())
+```
+
+### Load Team Metrics
+
+```python
+from src.data_collection import load_dataset
+
+metrics = load_dataset("data/team_metrics_clean.csv")
+print(metrics.head())
+```
+
+## Running the Analysis
+
+Execute analysis functions from the `src.analysis` module:
+
+```python
+from src.analysis import three_point_rate_by_season, rank_teams_by_three_point_adoption
+from src.data_collection import load_dataset
+
+shots = load_dataset("data/shot_data_clean.csv")
+
+# League-wide three-point trend
+trend = three_point_rate_by_season(shots)
+print(trend)
+
+# Teams ranked by adoption
+rankings = rank_teams_by_three_point_adoption(shots)
+print(rankings.head(10))
+```
+
+## Viewing Visualizations
+
+Use the Streamlit app to interactively explore the data:
+
+```bash
+streamlit run app.py
+```
+
+Then open your browser to `http://localhost:8501`.

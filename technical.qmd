@@ -1,5 +1,5 @@
 ---
-title: "Technical Report'
+title: "Technical Report"
 ---
 
 ## Purpose
