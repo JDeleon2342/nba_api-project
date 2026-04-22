@@ -6,13 +6,13 @@ website:
   title: "NBA Shot Selection Analysis Over 15 Years"
   navbar:
     left:
-      - href: 
+      - href: index.html
         text: Home
-      - href: 
+      - href: getting-started.html
         text: Getting Started
-      - href: 
+      - href: documentation.html
         text: Documentation
-      - href: 
+      - href: technical.html
         text: Technical Report
 
 format:
