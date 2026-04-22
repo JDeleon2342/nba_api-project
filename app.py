@@ -105,6 +105,7 @@ if page == "🏠 Overview":
         "### How has NBA shot selection evolved over the past decade, "
         "and which teams gained the greatest competitive advantage?"
     )
+    
     st.markdown("---")
 
     # Key metrics row
