@@ -1,0 +1,17 @@
+---
+title: "NBA Shot Selection Analysis"
+---
+
+## Overview
+
+This package provides tools to scrape and explore the NBA Shot Selection from the nba_api. This automates the collection, cleaning, analysis, and visualization of the change in NBA player shot selection from the 2010 to the end of the 2023 season.
+
+Check out this streamlit app to explore the findings [here](https://nbaapi-project-iktjrcqcxerwx6xqe9atg9.streamlit.app/)
+
+
+## Key Features
+
+
+
+
+## Main Pipeline

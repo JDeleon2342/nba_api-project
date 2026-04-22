@@ -105,6 +105,7 @@ if page == "🏠 Overview":
         "### How has NBA shot selection evolved over the past decade, "
         "and which teams gained the greatest competitive advantage?"
     )
+    
     st.markdown("---")
 
     # Key metrics row
@@ -233,7 +234,7 @@ elif page == "🏆 Team Analysis":
     selected_teams = st.multiselect(
         "Select Teams",
         sorted(shots["team"].unique()),
-        default=["Houston Rockets", "San Antonio Spurs", "Golden State Warriors"]
+        default=["Boston Celtics", "San Antonio Spurs", "Golden State Warriors"]
     )
 
     if selected_teams:

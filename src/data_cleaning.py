@@ -1,6 +1,27 @@
 import pandas as pd
 import numpy as np
 
+# ── Team Name Standardization ──────────────────────────────────────────────────
+def normalize_team_names(df):
+    """
+    Normalize historical team name changes to current names
+    for consistent franchise tracking across seasons.
+
+    Args:
+        df: Shot data DataFrame with 'team' column
+
+    Returns:
+        DataFrame with historical team names updated to current names
+    """
+    name_map = {
+        "Charlotte Bobcats":   "Charlotte Hornets",
+        "New Jersey Nets":     "Brooklyn Nets",
+        "New Orleans Hornets": "New Orleans Pelicans",
+        "LA Clippers" : "Los Angeles Clippers",
+    }
+    df = df.copy()
+    df["team"] = df["team"].replace(name_map)
+    return df
 
 # ── Column Standardization ──────────────────────────────────────────────────
 
@@ -203,6 +224,7 @@ def clean_shot_data(df):
     """
     print("Starting shot data cleaning pipeline...")
     df = standardize_columns(df)
+    df = normalize_team_names(df)
     df = drop_missing_coordinates(df)
     df = drop_backcourt_shots(df)
     df = add_three_point_flag(df)
